@@ -17,8 +17,6 @@ export function ChatPage() {
   const historyRef = useRef([])
   const share_token = token;
 
-  const BACKEND_URL = `http://localhost:5000`
-
   useEffect(() => {
     const check_chatbot = async () => {
       const { data, error } = await supabase
@@ -40,6 +38,9 @@ export function ChatPage() {
 
 
   const Send_Message = async () => {
+
+    const backend_url = import.meta.env.BACKEND_URL
+
     if (!user_message.trim()) return
     try {
       const userMessage = { role: "user", content: user_message }
@@ -47,7 +48,7 @@ export function ChatPage() {
       setMessages(prev => [...prev, userMessage])
       setUser_message("")
 
-      const res = await fetch(`${BACKEND_URL}/api/chat`, {
+      const res = await fetch(`${backend_url}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ share_token, user_message, history: historyRef.current })

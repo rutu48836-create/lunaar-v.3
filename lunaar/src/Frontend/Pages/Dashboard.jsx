@@ -11,6 +11,8 @@ import { Navigate, useNavigate } from "react-router"
 
 function Main_Content(){
 
+  const backend_url = import.meta.env.BACKEND_URL
+
   const navigate = useNavigate()
   const {user} = useAuth()
   const [showForm, setShowForm] = useState(false)
@@ -68,7 +70,7 @@ function Main_Content(){
     chatbot_id: chatbot.id,
 owner_id: user.id,
   });
-  window.location.href = `http://localhost:5000/auth/google?${params}`;
+  window.location.href = `${backend_url}/auth/google?${params}`;
 };
 
   if(showForm) return <Form_container onComplete={() => setShowForm(false)} />
