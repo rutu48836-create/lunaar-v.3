@@ -1,5 +1,5 @@
-import { Chat_Handler } from '../chat_handler.js'
 import { supabase } from '../config/supabase.js'
+import { Chat_Handler } from '../Chatbot.js' 
 
 // ─── Send reply back to Instagram ────────────────────────────────
 export async function sendInstagramReply(recipientId, text) {

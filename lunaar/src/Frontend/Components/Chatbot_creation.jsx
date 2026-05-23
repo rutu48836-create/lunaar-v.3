@@ -75,7 +75,7 @@ const {user,loading} = useAuth();
 }
 
 
-function Step_3({onNext,setStep,name,color,type,logo,setName,setType,setColor,setLogo,setPrompt,prompt}){
+function Step_3({onNext,setStep,name,color,type,logo,setName,setType,setColor,setLogo,setPrompt,prompt,setChatbotId}){
 
 const {user,loading} = useAuth();
 const [trainingFile,setTrainingFile] = useState(null)
@@ -135,7 +135,8 @@ const Create_bot = async () => {
 
   if (updateError) { console.error(updateError); return; }
 
-  alert("Success");
+  setChatbotId(data.id)
+  setStep(4)
 };
 
     return(
@@ -166,10 +167,84 @@ const Create_bot = async () => {
     )
 }
 
+function Step_4({ chatbotId }) {
+
+  const [pageId, setPageId] = useState("")
+  const [connected, setConnected] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const connectInstagram = async () => {
+    if (!pageId.trim()) return alert("Please enter your Instagram Page ID")
+    setLoading(true)
+
+    const { error } = await supabase
+      .from("chatbots")
+      .update({ instagram_page_id: pageId.trim() })
+      .eq("id", chatbotId)
+
+    setLoading(false)
+
+    if (error) {
+      console.error(error)
+      return alert("Failed to connect Instagram")
+    }
+
+    setConnected(true)
+  }
+
+  if (connected) {
+    return (
+      <div className={styles.Steps_container}>
+        <div className={styles.Head}>
+          <h3 onClick={() => window.location.reload()}><MoveLeft size={14} />Back</h3>
+        </div>
+        <div className={styles.Steps_card}>
+          <h1>You're live 🎉</h1>
+          <small>Your chatbot is created and connected to Instagram. Users who DM your Instagram account will now get AI replies.</small>
+          <div className={styles.btn_wrapper}>
+            <button onClick={() => window.location.reload()}>Go to Dashboard</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className={styles.Steps_container}>
+      <div className={styles.Head}>
+        <h3 onClick={() => window.location.reload()}><MoveLeft size={14} />Back</h3>
+      </div>
+      <div className={styles.Steps_card}>
+        <h1>Connect Instagram</h1>
+        <small>Link your Instagram Business account so your chatbot can reply to DMs automatically.</small>
+
+        <label>Instagram Page ID</label><br />
+        <input
+          type="text"
+          placeholder="e.g. 17841400000000000"
+          value={pageId}
+          onChange={(e) => setPageId(e.target.value)}
+        /><br />
+
+        <small style={{ marginTop: "10px", fontSize: "11px", color: "#9e9898", lineHeight: "1.6" }}>
+          Find this in Meta dashboard → Use Cases → Instagram → API Setup → under your connected account.
+        </small>
+
+        <div className={styles.btn_wrapper}>
+          <button onClick={connectInstagram} disabled={loading}>
+            {loading ? "Connecting..." : "Connect Instagram"}
+          </button>
+          <button onClick={() => window.location.reload()}>Skip for now</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function Form_container({onComplete}){
 
 const [step,setStep] = useState(1)
-const [storeData, setStoreData] = useState(null)
+const [chatbotId, setChatbotId] = useState(null)
 const [name,setName] = useState("")
 const [type,setType] = useState("Customer_Care")
 const [color,setColor] = useState("#ffffff")
@@ -179,6 +254,7 @@ const [prompt,setPrompt] = useState("")
 
 if(step === 1) return <Step_1 onNext={() => setStep(2)} step={step} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor}/>
 if(step === 2) return <Step_2 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt}/>
-if(step === 3) return <Step_3 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt}/>
+if(step === 3) return <Step_3 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt} setChatbotId={setChatbotId}/>
+if(step === 4) return <Step_4 chatbotId={chatbotId} />
 
 }
