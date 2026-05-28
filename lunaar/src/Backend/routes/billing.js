@@ -10,7 +10,7 @@ router.post("/create-subscription", async (req,res) => {
  const {user_id} = req.body
 const plan_id = process.env.PLAN_ID
  
- const {data:plan,error} = await supabase
+ const {data: plan,error} = await supabase
  .from("plans")
  .select('*')
  .eq("razorpay_plan_id",plan_id)
@@ -23,6 +23,7 @@ const plan_id = process.env.PLAN_ID
 
    const subscription = await razorpay.subscriptions.create({
     plan_id: plan.razorpay_plan_id,
+    total_count: 12,
     customer_notify: 1,
     notes: { user_id },
   });
