@@ -15,7 +15,7 @@ router.post("/",async (req,res) => {
    const {data:user,error:userError} = await supabase
    .from("profile")
    .update({
-    plan:sub.plan_id,
+    plan:"Growth",
     razorpay_subscription_id:sub.id,
     subscription_status:sub.status,
     message_limit:1000
