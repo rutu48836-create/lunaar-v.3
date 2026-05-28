@@ -1,0 +1,157 @@
+.Steps_container{
+    width: 100vw;
+    height: auto;
+    min-height: 100vh;
+    position: absolute;
+    z-index:10000;
+    background: #f7f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+}
+
+.Head{
+    width: 96%;
+    padding:1rem;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom:10px;
+}
+
+.Head h3{
+    font-size: 16px;
+    color: #615d5d;
+    font-weight: 480;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.Steps_card{
+    width: 35%;
+    padding: 2rem;
+    height: 450px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.Steps_card h1{
+    font-size: 32px;
+    font-weight: 580;
+    margin-bottom: 12px;
+}
+
+.Steps_card small{
+    display: block;
+    font-size: 12.4px;
+    color: #615d5d;
+    width: 90%;
+    line-height: 1.28rem;
+    height: auto;
+}
+
+.Steps_card label{
+    font-size: 14px;
+    color: #7a7575;
+    font-weight: 580;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 14px;
+}
+
+
+.Steps_card input,
+.Steps_card select,
+.Steps_card textarea {
+    width: 90%;
+    padding: .7rem;
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    background: #fff;
+    border: none;
+    outline: none;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    box-sizing: border-box;
+    appearance: none;
+}
+
+.btn_wrapper{
+    width: 90%;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.btn_wrapper button:first-child{
+    width: 100%;
+    padding: .6rem;
+    font-family: "Inter",sans-serif;
+    color: #fff;
+    border-radius: 8px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    cursor: pointer;
+    background:#000;
+}
+
+.btn_wrapper button:last-child{
+    width: 100%;
+    padding: .6rem;
+    font-family: "Inter",sans-serif;
+    color: #000;
+    border-radius: 8px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    cursor: pointer;
+    background: #fff;
+}
+
+.Steps_card input:not([type="color"]),
+.Steps_card select {
+    width: 90%;
+    padding: .7rem;
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    background: #fff;
+    border: none;
+    outline: none;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    box-sizing: border-box;
+    appearance: none;
+}
+
+.Steps_card input[type="color"] {
+    width: 90%;
+    height: 38px;
+    padding: 2px 4px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    box-sizing: border-box;
+    cursor: pointer;
+    background: #fff;
+}
+
+.Steps_card input[type="file"] {
+    padding: .5rem .7rem;
+    font-size: 11px;
+    color: #7a7575;
+}
+
+@media(max-width:768px){
+    .Steps_card{
+        width:80%;
+    }
+}

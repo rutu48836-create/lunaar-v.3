@@ -1,0 +1,164 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+.landing_page_container{
+    width: 100%;
+    box-sizing: border-box;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.Hero_section_container{
+    width: 100%;
+    height: auto;
+    flex: 1;
+    display: flex;
+    color: #000;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 80px;
+}
+
+.Hero_section_container h1{
+    width: 70%;
+    text-align: flex-start;
+    display: block;
+    font-family: "PlayFair display",sans-serif;
+    font-size: 78px;
+    font-weight: 100;
+    margin-bottom: 20px;
+}
+
+.Hero_section_container span{
+    
+  width: 60%;
+  line-height: 1.6rem;
+  text-align: flex-start;
+  color: #474343;
+
+}
+
+.Hero_section_container button{
+    margin-top: 30px;
+    background: #000;
+    font-family: "Inter",sans-serif;
+    width: 180px;
+    padding: .8rem;
+    border-radius: 20px;
+    border: 3px solid #ccc;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.Hero_section_container img{
+    width: 500px;
+    height: auto;
+    margin-top: 30px;
+}
+
+.content{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-left: 5rem;
+}
+
+.nav_links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav_cta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #111;
+  padding: 4px;
+}
+
+@media (max-width: 768px) {
+  .nav_links {
+    display: none;
+  }
+
+  .nav_cta {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .Hero_section_container {
+    flex-direction: column;
+    padding: 1rem;
+    margin-top: 70px;
+  }
+
+  .Hero_section_container h1 {
+    font-size: 38px;
+    width: 100%;
+  }
+
+  .Hero_section_container span {
+    width: 100%;
+  }
+
+  .Hero_section_container img {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .content {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    padding-left: 0;
+  }
+
+  .content h1{
+    width: 80%;
+    font-size: 50px;
+  }
+
+  .content span{
+    width: 85%;
+    font-size: 12.8px;
+  }
+
+}
+
+@media(max-width:768px){
+    .Hero_section_container{
+        flex-direction: column;
+    }
+
+    .content{
+        width: 100%;
+        padding-left:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+}
