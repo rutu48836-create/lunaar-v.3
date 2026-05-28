@@ -6,20 +6,16 @@ import {supabase} from "../config/supabase.js"
 
 const router = express.Router();
 router.post("/create-subscription", async (req,res) => {
-
+console.log("new code")
+ 
  const {user_id} = req.body
 const plan_id = "Growth"
  
- const {data: plan,error} = await supabase
+ const {data: plan} = await supabase
  .from("plans")
  .select('*')
  .eq("id","Growth")
- .maybeSingle()
- 
- if(error){
-    console.log(error)
-    return res.status(500).json({error:error.message})
- }
+ .single()
 
  console.log(`plan is`,plan)
 
