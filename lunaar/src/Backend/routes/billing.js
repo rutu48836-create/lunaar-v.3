@@ -13,7 +13,7 @@ const plan_id = "Growth"
  const {data: plan,error} = await supabase
  .from("plans")
  .select('*')
- .eq("plan",plan_id)
+ .eq("id",plan_id)
  .single()
 
  if(error){
