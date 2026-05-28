@@ -9,20 +9,22 @@ export function Nav_bar({active,setActive}){
     const { user, loading } = useAuth()
     const [profile_active,setProfile_active] = useState(false)
 
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+
        const handleLogout = async () => {
     await supabase.auth.signOut()
     navigate("/Sign-In")
   }
 
     const handleUpgrade = async () => {
-    const res = await fetch("/api/billing/create-subscription", {
+    const res = await fetch(`${BACKEND_URL}/api/billing/create-subscription`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         user_id: user.id,
-        plan_id: "pro",
+        plan_id: "Growth",
       }),
     });
 
