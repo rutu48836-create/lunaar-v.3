@@ -5,7 +5,6 @@ import crypto from "crypto"
 import {supabase} from "../config/supabase.js"
 
 const router = express.Router();
-
 router.post("/create-subscription", async (req,res) => {
 
  const {user_id,plan_id} = req.body
