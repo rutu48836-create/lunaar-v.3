@@ -8,13 +8,12 @@ const router = express.Router();
 router.post("/create-subscription", async (req,res) => {
 
  const {user_id} = req.body
-const plan_id = process.env.PLAN_ID
- console.log("Looking up plan_id:", plan_id);
+const plan_id = "Growth"
  
  const {data: plan,error} = await supabase
  .from("plans")
  .select('*')
- .eq("razorpay_plan_id",plan_id)
+ .eq("plan",plan_id)
  .single()
 
  if(error){
