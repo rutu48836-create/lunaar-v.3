@@ -4,7 +4,6 @@ import crypto from "crypto"
 import {supabase} from "../config/supabase.js"
 
 const router = express.Router();
-
 router.post("/",async (req,res) => {
 
    const event = req.body.event;
