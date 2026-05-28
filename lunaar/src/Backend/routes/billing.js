@@ -13,13 +13,15 @@ const plan_id = "Growth"
  const {data: plan,error} = await supabase
  .from("plans")
  .select('*')
- .eq("id",plan_id)
+ .eq("id","Growth")
  .single()
 
  if(error){
     console.log(error)
     return res.status(500).json({error:error.message})
  }
+
+ console.log(`plan is`,plan)
 
    const subscription = await razorpay.subscriptions.create({
     plan_id: plan.razorpay_plan_id,
