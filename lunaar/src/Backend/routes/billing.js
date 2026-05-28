@@ -7,12 +7,13 @@ import {supabase} from "../config/supabase.js"
 const router = express.Router();
 router.post("/create-subscription", async (req,res) => {
 
- const {user_id,plan_id} = req.body
-
+ const {user_id} = req.body
+const plan_id = process.env.PLAN_ID
+ 
  const {data,error} = await supabase
  .from("plans")
  .select('*')
- .eq("id",plan_id)
+ .eq("razorpay_plan_id",plan_id)
  .single()
 
  if(error){
