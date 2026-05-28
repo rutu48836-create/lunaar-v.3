@@ -59,7 +59,7 @@ return(
                 <li><CircleQuestionMark size={23} strokeWidth={1.50} color="#726c6c" /></li>
                                 <li><StickyNote size={23} strokeWidth={1.50} color="#726c6c" /></li>
                                   <li onClick={ () => setActive(!active) }><Menu size={23} strokeWidth={1.50} color="#726c6c" /></li>
-                                   <li onClick={handleUpgrade}>Upgrade</li>
+                                   <button onClick={handleUpgrade}>Upgrade</button>
     </ul>
 </div>
 
