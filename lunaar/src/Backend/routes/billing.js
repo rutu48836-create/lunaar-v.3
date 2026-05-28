@@ -14,7 +14,6 @@ const plan_id = "Growth"
  .from("plans")
  .select('*')
  .eq("id","Growth")
- .single()
 
  if(error){
     console.log(error)
