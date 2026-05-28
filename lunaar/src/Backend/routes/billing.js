@@ -2,7 +2,7 @@
 import {razorpay} from "../config/razorpay.js"
 import express from "express"
 import crypto from "crypto"
-import {supabase} from "..config/supabase.js"
+import {supabase} from "../config/supabase.js"
 
 const router = express.Router();
 
