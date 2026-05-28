@@ -10,7 +10,7 @@ router.post("/create-subscription", async (req,res) => {
  const {user_id,plan_id} = req.body
 
  const {data,error} = await supabase
- .from("plan")
+ .from("plans")
  .select('*')
  .eq("id",plan_id)
  .single()
