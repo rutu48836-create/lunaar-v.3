@@ -2,9 +2,18 @@ import { useState } from 'react'
 import styles from "../Styles/Landing.module.css"
 import { SendHorizonal, Send, Menu, X } from 'lucide-react'
 import hero from "../assets/hero.png"
+import {useNavigate} from "react-router-dom"
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const navigate = useNavigate()
+
+  const Navlinks = [
+
+    {label:"Features",href:"/features"},
+    {label:"Privacy",href:"/privacy-policy"}
+
+  ]
 
   return (
     <>
@@ -31,21 +40,20 @@ export function Navbar() {
 
         {/* Desktop Links */}
         <div className={styles.nav_links}>
-          {['Features', 'Pricing', 'Docs'].map(link => (
-            <span key={link} style={{ fontSize: '14px', color: '#555', cursor: 'pointer', fontWeight: 500 }}
-              onMouseEnter={e => e.target.style.color = '#111'}
-              onMouseLeave={e => e.target.style.color = '#555'}>
-              {link}
+ {Navlinks.map((link) => (
+
+              <span key={link.label} style={{ fontSize: '14px', color: '#555', cursor: 'pointer', fontWeight: 500 }} onClick={() => navigate(link.href)}>
+              {link.label}
             </span>
-          ))}
+))}          
         </div>
 
         {/* Desktop CTA */}
         <div className={styles.nav_cta}>
-          <button style={{ background: 'none', border: 'none', fontSize: '14px', color: '#555', cursor: 'pointer', fontWeight: 500 }}>
+          <button style={{ background: 'none', border: 'none', fontSize: '14px', color: '#555', cursor: 'pointer', fontWeight: 500 }} onClick={() => navigate('/auth')}>
             Sign in
           </button>
-          <button style={{ background: '#111', color: '#fff', border: 'none', borderRadius: '10px', padding: '8px 18px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
+          <button style={{ background: '#111', color: '#fff', border: 'none', borderRadius: '10px', padding: '8px 18px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }} onClick={() => navigate('/auth')}>
             Get started
           </button>
         </div>
@@ -73,14 +81,15 @@ export function Navbar() {
           gap: '1.2rem',
           boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
         }}>
-          {['Features', 'Pricing', 'Docs'].map(link => (
-            <span key={link} style={{ fontSize: '15px', color: '#333', cursor: 'pointer', fontWeight: 500 }}
-              onClick={() => setMenuOpen(false)}>
-              {link}
+                    {Navlinks.map((link) => (
+
+              <span key={link.label} style={{ fontSize: '14px', color: '#555', cursor: 'pointer', fontWeight: 500 }} onClick={() => navigate(link.href)}>
+              {link.label}
             </span>
-          ))}
-          <hr style={{ border: 'none', borderTop: '1px solid #f0f0f0' }} />
-          <button style={{ background: 'none', border: 'none', fontSize: '15px', color: '#555', cursor: 'pointer', fontWeight: 500, textAlign: 'left', padding: 0 }}>
+))}          
+
+<hr style={{ border: 'none', borderTop: '1px solid #f0f0f0' }} />
+          <button style={{ background: 'none', border: 'none', fontSize: '15px', color: '#555', cursor: 'pointer', fontWeight: 500, textAlign: 'left', padding: 0 }} onClick={() => navigate('/auth')}>
             Sign in
           </button>
           <button style={{ background: '#111', color: '#fff', border: 'none', borderRadius: '10px', padding: '10px 18px', fontSize: '15px', fontWeight: 600, cursor: 'pointer' }}>
@@ -98,7 +107,7 @@ function Hero_section() {
       <div className={styles.content}>
         <h1>Make your docs talk. for free</h1>
         <span>make a chat agent for free and stay worry free, train agent on prompt, documents let it do the hard work</span>
-        <button>Check Out <Send size={18} /></button>
+        <button onClick={() => navigate('/auth')}>Check Out <Send size={18} /></button>
       </div>
       <img src={hero} alt="hero img" />
     </div>

@@ -8,6 +8,7 @@ import { Form_container } from "../Components/Chatbot_creation"
 import { supabase } from "../Components/supabase"
 import { Share } from "lucide-react"
 import { Navigate, useNavigate } from "react-router"
+import {Ellipsis} from "lucide-react"
 
 function Main_Content(){
 
@@ -20,6 +21,7 @@ function Main_Content(){
   const [lead_list, setLead_list] = useState([])
   const [selected_chatbot, setSelected_chatbot] = useState(null)
   const [leads_loading, setLeads_loading] = useState(false)
+  const [task_list_active,setTask_list_active] = useState(null)
 
   useEffect(() => {
     const check_bots = async() => {
@@ -73,6 +75,7 @@ owner_id: user.id,
   window.location.href = `${backend_url}/auth/google?${params}`;
 };
 
+
   if(showForm) return <Form_container onComplete={() => setShowForm(false)} />
 
   return(
@@ -94,41 +97,59 @@ owner_id: user.id,
               <div className={styles.Chatbot_logo} style={{         background: `linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 35%, rgba(255,255,255,0.05) 60%, rgba(255,255,255,0) 100%), linear-gradient(120deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 40%), ${chatbot?.color}`,
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)", }}>
-                <img src={chatbot?.logo_url} alt="logo"/>
+               <div className={styles.chatbot_page_preview} style={{         background: `linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 35%, rgba(255,255,255,0.05) 60%, rgba(255,255,255,0) 100%), linear-gradient(120deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 40%), ${chatbot?.color}`,
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)", }}>
+                <div className={styles.preview_header}>
+                 <div className={styles.preview_left_head}>
+                   <img src={chatbot?.logo_url} alt='logo' className={styles.preview_logo}/>
+                   <h3>{chatbot.name}</h3>
+                  </div>
+                  </div>
+
+                  <div className={styles.preview_body}>
+                    <div className={styles.preview_message_1} style={{         background: `linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 35%, rgba(255,255,255,0.05) 60%, rgba(255,255,255,0) 100%), linear-gradient(120deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 40%), ${chatbot?.color}`,
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)", }}/>
+                    <div className={styles.preview_message_2}/>    
+                    </div>
+
+                </div>
               </div>
               <div className={styles.Chatbot_Main_Content}>
                 <div className={styles.Head}>
-                  <div className={styles.Active}><span onClick={() => {
-                   navigate(`/chat/${chatbot.share_token}`)
-                  }}><Share size={18} cursor={Pointer}/></span></div>
-                  <h3>{chatbot.name}</h3>
-                </div>
-                <div className={styles.tagline}>
-                 <ul>
+                <div className={styles.left_side_head}>
+                  <img src={chatbot?.logo_url}/> <span>{chatbot.name}</span>
+                  </div>
+                  <div className={styles.right_side_head} style={{ position: 'relative' }}>
+  <button onClick={() => setTask_list_active(task_list_active?.id === chatbot.id ? null : chatbot)}>
+    <Ellipsis size={16}/>
+  </button>                       {task_list_active?.id === chatbot.id && (
+    <div className={styles.task_list_card}>
+      
+    <div className={styles.task_list_btns}>
+          {chatbot.type === "Leads"  && <button onClick={() => Fetch_leads(chatbot)} className={styles.lead_button}>Leads</button> } 
+                 {chatbot.type === "Appointment"  && <button onClick={() => connectGoogleCalendar(chatbot)} className={styles.calendar_button}>Connect</button>} 
+         
+         
+         <button className={styles.delete_button} onClick={() => delete_chatbot(chatbot.id)}>Delete</button>        
+         </div>
+      <ul>
+        <li><span>type</span> <h4>{chatbot.type}</h4></li>
+                <li><span>Message</span> <h4>{chatbot.message_count}</h4></li>
 
-                  <li>Messages : {chatbot.message_count || 0}</li>
-                  <li>type : {chatbot.type}</li>
-<li>Created: {new Date(chatbot.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</li>
-                 </ul>
+      </ul>
+    </div>
+  )}        
+                    </div>
                 </div>
-                <div className={styles.Card_bottom}>
-                  <button onClick={() => delete_chatbot(chatbot.id)}>Delete</button>
-                 {chatbot.type === "Leads" && (
-
-                  <button onClick={() => Fetch_leads(chatbot)} className={styles.lead_btn}>Leads</button>
-                 )}
-
-                 {chatbot.type === "Appointment" && (
-  <button onClick={() => connectGoogleCalendar(chatbot)} className={styles.Calendar_btn}>
-    Connect
-  </button>
-)}
-                </div>
+              
               </div>
             </div>
           ))
         }
       </div>
+
 
       {selected_chatbot && (
         <div className={styles.leads_overlay}>
@@ -190,13 +211,14 @@ owner_id: user.id,
 export function Dashboard(){
 
   const [profile_active,setProfile_active] = useState(false)
+    const [active,setActive] = useState(false)
 
 
   return(
     <div className={styles.Dashboard_page_container}>
-      <Nav_bar/>
+      <Nav_bar active={active} setActive={setActive}/>
       <div className={styles.Dashboard_Main_Content_wrapper}>
-        <SideBar profile_active={profile_active} setProfile_active={setProfile_active} /><Main_Content/>
+        <SideBar profile_active={profile_active} setProfile_active={setProfile_active} active={active} setActive={setActive}/><Main_Content/>
       </div>
     </div>
   )

@@ -1,10 +1,10 @@
 
 import {useState,useEffect} from "react"
 import styles from "../Styles/Nav.module.css"
-import {SendHorizontal,UserCircle,CircleQuestionMark,StickyNote,PlusCircle,SquarePen,Tags,PanelRightOpen , X,LogOut} from "lucide-react"
+import {SendHorizontal,UserCircle,CircleQuestionMark,StickyNote,PlusCircle,SquarePen,Tags,PanelRightOpen , X,LogOut,Menu} from "lucide-react"
 import { useAuth } from "./AuthContext"
 
-export function Nav_bar(){
+export function Nav_bar({active,setActive}){
 
     const { user, loading } = useAuth()
     const [profile_active,setProfile_active] = useState(false)
@@ -12,6 +12,36 @@ export function Nav_bar(){
        const handleLogout = async () => {
     await supabase.auth.signOut()
     navigate("/Sign-In")
+  }
+
+    const handleUpgrade = async () => {
+    const res = await fetch("/api/billing/create-subscription", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user.id,
+        plan_id: "pro",
+      }),
+    });
+
+      const sub = await res.json();
+
+    const options = {
+      key: "rzp_live_SueBoDdYYBiFIM",
+      subscription_id: sub.id,
+      name: "Lunaar",
+      description: "Pro Plan",
+      theme: { color: "#6366f1" },
+      handler: function (response) {
+        console.log("Payment done (not final)", response);
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+
   }
 
 return(
@@ -28,7 +58,8 @@ return(
         <li  onClick={() => setProfile_active(true)}><UserCircle size={23} strokeWidth={1.50} color="#726c6c"/></li>
                 <li><CircleQuestionMark size={23} strokeWidth={1.50} color="#726c6c" /></li>
                                 <li><StickyNote size={23} strokeWidth={1.50} color="#726c6c" /></li>
-
+                                  <li onClick={ () => setActive(!active) }><Menu size={23} strokeWidth={1.50} color="#726c6c" /></li>
+                                   <li onClick={handleUpgrade}>Upgrade</li>
     </ul>
 </div>
 
@@ -61,10 +92,9 @@ return(
 )
 }
 
-export function SideBar({profile_active,setProfile_active}){
+export function SideBar({profile_active,setProfile_active,active,setActive}){
 
     const { user, loading } = useAuth()
-    const [active,setActive] = useState(false)
 
    const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -74,23 +104,19 @@ export function SideBar({profile_active,setProfile_active}){
     return(
         <div className={`${styles.Sidebar_container} ${active ? styles.sidebar_active : styles.sidebar_disabled}`} onMouseEnter={() => setActive(true)}>
             <div className={styles.Sidebar_close}>
-              {active &&  <button onClick={() => setActive(false)}><PanelRightOpen size={20} strokeWidth={1.50}/></button>}
+              {active && ( 
+                
+                <button onClick={() => setActive(false)}><PanelRightOpen size={20} strokeWidth={1.50}/></button>
+              )}
             </div>
             <ul>
                 <li><SquarePen  size={22} strokeWidth={1.50} color="#353232"/>{active && <span> New Chatbot</span>}</li>
-                                             {//   <li><Tags size={22} strokeWidth={1.50} color="#353232"/>{active && <span>Subscription Plans</span>}</li>
-                                                }   <li><UserCircle  size={22} strokeWidth={1.50} color="#353232" onClick={() => setProfile_active(true)}/>{active && <span>Account</span>}</li>
-
+                <li><StickyNote  size={22} strokeWidth={1.50} color="#353232" onClick={() => setProfile_active(true)}/>{active && <span>Privacy Policy</span>}</li>
+              <li><UserCircle  size={22} strokeWidth={1.50} color="#353232" onClick={() => setProfile_active(true)}/>{active && <span>User Profile</span>}</li>
+                            <li><Tags  size={22} strokeWidth={1.50} color="#353232" onClick={() => setProfile_active(true)}/>{active && <span>Subscription</span>}</li>
+      
+                                                
             </ul>
-
-            {active &&
-            
-            <div className={styles.BETA_NOTICE}>
-             <h2>Lunnar is currently BETA</h2>
-             <p>dear users, lunaar is currently still in testing mode and new features will be coming soon</p>
-                </div>
-            
-            }
 
 {profile_active && (
         <div className={styles.profile_module_wrapper}>

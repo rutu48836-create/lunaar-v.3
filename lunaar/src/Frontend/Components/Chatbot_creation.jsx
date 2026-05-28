@@ -23,7 +23,7 @@ function Step_1({onNext,step,name,color,type,logo,setName,setType,setColor,setLo
                 <small>let your docs talk and solve queries for your customer</small><br/>
             
             <label>Chatbot Name</label><br/>
-    <input type="text" placeholder="Enter name" value={name} onChange={(e) => setName(e.target.value)}/><br/>
+    <input type="text" placeholder="Enter name" value={name} onChange={(e) => setName(e.target.value)} required/><br/>
 
                 <label style={{marginTop:"30px"}}>Use Case</label><br/>
    <select onChange={(e) => setType(e.target.value)} value={type}>
@@ -58,7 +58,7 @@ const {user,loading} = useAuth();
                 <small>Add custom branding to make it look professinal</small><br/>
             
             <label>Agent-Logo</label><br/>
-    <input type="file" style={{fontSize:"8px"}} accept="image/*"   onChange={(e) => setLogo(e.target.files[0])}
+    <input type="file" style={{fontSize:"8px"}} accept="image/*"   onChange={(e) => setLogo(e.target.files[0])} required
  /><br/>
 
                 <label style={{marginTop:"30px"}}>Color</label><br/>
@@ -152,7 +152,7 @@ const Create_bot = async () => {
             
             <label>Prompt</label><br/>
     <textarea type="text" style={{fontSize:"12px"}} onChange={(e) => setPrompt(e.target.value)} value={prompt}
- /><br/>
+ required/><br/>
 
                 <label style={{marginTop:"30px"}}>Upload Knowledge</label><br/>
 <input type="file" onChange={(e) => setTrainingFile(e.target.files[0])} accept="application/pdf, text/plain, text/csv, text/markdown"/>

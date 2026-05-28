@@ -77,24 +77,22 @@ body,html{
 
 .chatbot_card{
     width: 400px;
-    height: 200px;
+    height: 260px;
     display: flex;
+    flex-direction:column;
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     border-radius: 10px;
     gap: 0px;
-    overflow: hidden;
     cursor: pointer;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.chatbot_card:hover {
-    transform: translateY(-3px);
-    box-shadow: rgba(0, 0, 0, 0.08) 0px 8px 24px;
-}
-
 .Chatbot_logo {
-    width: 40%;
-    height: 100%;
+    max-width: 100%;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+    min-height: 190px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -110,13 +108,80 @@ body,html{
     background-size: 20px 12px;
 }
 
-.Chatbot_logo img{
-    width: 60px;
-    height: 60px;
-    border-radius: 14px;
-    border: 2px solid #6d6969;
-    object-position: center;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+.chatbot_page_preview{
+    width:180px;
+    height:170px;
+box-shadow: rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em;
+  border-top-left-radius:14px;
+    border-top-right-radius:14px;
+    background:#ffff;
+    display:flex;
+    flex-direction:column;
+    bottom:0;
+    position:absolute;
+    overflow:hidden;
+}
+
+.preview_header{
+    width:100%;
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.preview_left_head{
+    width:auto;
+    height:100%;
+    display:flex;
+    margin-left:8px;
+    align-items:center;
+    gap:6px;
+}
+
+.preview_logo{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+}
+
+.preview_header h3{
+    font-size:11.2px;
+    font-weight:440;
+}
+
+.preview_body{
+    width:100%;
+    height:130px;
+    border-top-left-radius:20px;
+    border-top-right-radius:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    background:#fff;
+}
+
+.preview_message_1{
+    width:100px;
+    padding:.6rem;
+    border-radius:20px;
+    margin-top:14px;
+    margin-right:10px;
+    align-self:flex-end;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.preview_message_2{
+    width:100px;
+    padding:.6rem;
+    border-radius:20px;
+    margin-top:14px;
+    margin-right:10px;
+    align-self:flex-start;
+    border:1px solid #ccc;
+    margin-left:10px;
 }
 
 .Chatbot_Main_Content{
@@ -133,15 +198,50 @@ body,html{
     height: auto;
     display: flex;
     align-items: center;
-    flex-direction: row-reverse;
     justify-content: space-between;
     margin-bottom: 0;
     margin-left: 10px;
+    height:100%;
+}
+
+.left_side_head,.right_side_head{
+    display:flex;
+    align-items:center;
+    gap:6px; 
+    height:100%;
+    width:auto;   
+    position: relative;
+}
+
+.left_side_head img{
+    width:40px;
+    height:40px;
+    border-radius:10px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+}
+
+.left_side_head span{
+    font-size:14px;
+    font-weight:500;
 }
 
 .Head h3{
     font-size: 16px;
     font-weight: 520;
+}
+
+.right_side_head button{
+
+width:38px;
+height:38px;
+border:1px solid #ccc;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-right:20px;
+cursor:pointer;
+
 }
 
 .Active{
@@ -402,6 +502,104 @@ body,html{
     cursor: pointer;
 }
 
+.task_list_card{
+    padding:.0rem;
+    position: absolute;
+    top: calc(100% + -6px);
+    right: 0;     
+    padding:.4rem;         
+    width: 200px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 10px;
+    z-index: 999;         
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+}
+
+.task_list_btns{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:auto;
+    gap:10px;
+    margin-top:10px;
+    border-bottom:1px solid #ccc;
+    padding-bottom:10px;
+}
+
+.lead_button{
+    min-width:90%;
+    padding:.5rem;
+    display:flex;
+    place-self:center;
+    margin-left:16px;
+    font-family:"Inter",sans-serif;
+    background:#000;
+    border:none;
+    color:white;
+}
+
+.calendar_button{
+    min-width:90%;
+    padding:.2rem;
+    display:flex;
+    place-self:center;
+    margin-left:16px;
+    font-family:"Inter",sans-serif;
+    background:#000;
+    border:1px solid #000;
+    color:white;
+    
+}
+
+.delete_button{
+    min-width:90%;
+    padding:.2rem;
+    display:flex;
+    place-self:center;
+    margin-left:16px;
+    font-family:"Inter",sans-serif;
+    background:#fff;
+    border:1px solid #cccc;
+    color:red;
+}
+
+.task_list_card ul{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    list-style:none;
+    gap:0px;
+    width:100%;
+    height:auto;
+}
+
+.task_list_card ul li{
+    width:90%;
+    height:35px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-left:-40px;
+}
+
+.task_list_card ul li span{
+    font-size:13px;
+    font-family:'inter',sans-serif;
+    font-weight:480;
+}
+
+.task_list_card ul li h4{
+    font-size:13px;
+    font-weight:450;
+    color:#555;
+}
+
+
 @media(max-width:768px){
     .Main_content{
         padding-left: 1rem;
@@ -427,7 +625,7 @@ body,html{
 
     .new_project button{
         width: 98%;
-        height: 46px;
+        height: 40px;
         background: #000;
         color: #ccc;
         border-radius: 14px;
@@ -449,7 +647,7 @@ body,html{
     }
 
     .chatbot_card{
-        width: 480px;
+        width: 440px;
         margin-left: -20px;
     }
 
