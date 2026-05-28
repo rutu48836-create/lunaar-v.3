@@ -14,7 +14,8 @@ const plan_id = "Growth"
  .from("plans")
  .select('*')
  .eq("id","Growth")
-
+ .maybeSingle()
+ 
  if(error){
     console.log(error)
     return res.status(500).json({error:error.message})
