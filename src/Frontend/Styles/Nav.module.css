@@ -95,14 +95,19 @@ body,html{
 }
 
 .sidebar_disabled{
+width:70px;
 align-items: center;
-    
+overflow:hidden;  
+min-height:100%;  
+bottom:0;
+margin-bottom:0;
 }
 
 .sidebar_disabled ul{
     align-items: center;
     justify-content: center;
     gap: 20px;
+    position:fixed;
 }
 
 .sidebar_disabled ul li{
@@ -135,7 +140,7 @@ background: #fff;
 }
 
 .sidebar_active ul li:hover{
-    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     color: black;
     cursor: pointer;
     padding-right: 0rem;
@@ -172,7 +177,7 @@ background: #fff;
 
 .profile_card{
     width: 34%;
-    height: 300px;
+    height: auto;
     background: #fff;
     border-radius: 10px;
     box-shadow: rgba(0, 0
@@ -275,6 +280,141 @@ line-height: 1.80rem;
     display:none;
 }
 
+.sidebar_active .User_Card{
+    width:100%;
+    height:60px;
+    border:1px solid #ccc;
+    display:flex;
+    align-self:flex-end;
+    justify-self:flex-end;
+    position:absolute;
+    bottom:60px;
+    padding:0;
+    margin:0;
+    padding-right:0rem;
+    place-self:center;
+    align-items:center;
+}
+
+.sidebar_disabled .User_Card{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+        position:absolute;
+    bottom:0px;
+    padding:0;
+    margin:0;
+    border:1px solid #ccc;
+        place-self:center;
+    align-items:center;
+    width:70px;
+    height:60px;
+}
+
+.sidebar_disabled .User_Card img{
+    min-width:30px;
+    min-height:50px;
+    border-radius:50%;
+    border:1px solid black;
+}
+
+.sidebar_active .User_Card img{
+    min-width:30px;
+    min-height:46px;
+    border-radius:50%;
+    border:1px solid black;
+    margin-left:4px;
+}
+
+.sidebar_active .User_Profile{
+    width:auto;
+    height:100%;
+    align-items:center;
+    justify-content:flex-start;
+    display:flex;
+    gap:8px;
+}
+
+.User_Profile span{
+    font-size:12.4px;
+    color:#535050;
+}
+
+.Upgrade_wrapper{
+    width:100%;
+    height:auto;
+box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  background: radial-gradient(
+    ellipse at bottom,
+    rgba(71, 81, 92, 1) 0%,
+    rgba(11, 21, 30, 1) 45%
+  );
+
+  color: rgb(255, 255, 255, 0.66);
+
+    border-radius:10px;
+    padding:.8rem;
+    margin-top:40px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:0px;
+}
+
+.row{
+    width:100%;
+    height:auto;
+    align-items:center;
+    display:flex;
+    justify-content:space-between;
+}
+
+.row span{
+    font-size:14px;
+    font-weight:490;
+}
+
+.row h4{
+    font-size:12px;
+    font-weight:400;
+    color:#ccc;
+}
+
+.Upgrade_btn{
+    width:100%;
+    height:36px;
+    padding:.4rem;
+    font-family:"Inter",sans-serif;
+    font-size:14px;
+    border:none;
+    border-radius:4px;
+    font-weight:500;
+    cursor:pointer;
+    margin-top:8px;
+}
+
+.Upgrade_wrapper button:last-child{
+    width:100%;
+    height:36px;
+    padding:.4rem;
+    font-family:"Inter",sans-serif;
+    font-size:14px;
+    border:none;
+    background:transparent;
+    border:1px solid #ccc;
+    color:#fff;
+    border-radius:4px;
+    font-weight:500;
+    cursor:pointer;
+    margin-top:8px;
+}
+
+  .Links_wrapper ul li:nth-child(3){
+    display:none;
+}
+
+
 @media(max-width:768px){
     .sidebar_disabled{
         display: none;
@@ -289,14 +429,17 @@ line-height: 1.80rem;
     display:none;
 }
 
+    .Links_wrapper ul li:nth-child(4){
+    display:flex;
+}
 
-    .Links_wrapper ul li:nth-child(3){
-    display:none;
+  .Links_wrapper ul li:nth-child(3){
+    display:flex;
 }
 
 
-    .Links_wrapper ul li:nth-child(4){
-    display:flex;
+.profile_card{
+    width:80%;
 }
 
 }

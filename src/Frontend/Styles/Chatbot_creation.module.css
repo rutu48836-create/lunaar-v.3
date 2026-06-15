@@ -1,9 +1,10 @@
 .Steps_container{
-    width: 100vw;
+    min-width: 100vw;
     height: auto;
-    min-height: 100vh;
-    position: absolute;
-    z-index:10000;
+    min-height: 100%; 
+    position: fixed;
+    top:0;
+    z-index:20000;
     background: #f7f4f4;
     display: flex;
     flex-direction: column;
@@ -11,6 +12,9 @@
     justify-content: flex-start;
     overflow-y: auto;
     overflow-x: hidden;
+    left:0;
+    right:0;
+    bottom:0;
 
 }
 
@@ -37,7 +41,7 @@
 .Steps_card{
     width: 35%;
     padding: 2rem;
-    height: 450px;
+    min-height: 450px;
     background: #fff;
     border-radius: 20px;
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
@@ -86,10 +90,10 @@
 
 .btn_wrapper{
     width: 90%;
-    margin-top: 50px;
+    margin-top: 40px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
 }
 
 .btn_wrapper button:first-child{
@@ -145,9 +149,28 @@
 }
 
 .Steps_card input[type="file"] {
-    padding: .5rem .7rem;
-    font-size: 11px;
-    color: #7a7575;
+  display:none;
+}
+
+ .custom_button{
+    width: 90%;
+    padding: .7rem;
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    background: #fff;
+    outline: none;
+    box-sizing: border-box;
+    appearance: none;
+    cursor:pointer;
+    font-weight:00;
+    display:inline-block;
+    align-items:center;
+    margin-bottom:0;
+    bottom:0;
+    border-style:dotted;
+    border: 2px dotted #ccc; 
+
 }
 
 @media(max-width:768px){

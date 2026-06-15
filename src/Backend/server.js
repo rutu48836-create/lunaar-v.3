@@ -41,34 +41,41 @@ app.post('/webhook', async (req, res) => {
 })
 
 // ── Instagram OAuth — start ──────────────────────────────────────────────────
+// Frontend hits this with ?chatbotId=xxx, we redirect user to Instagram login
 app.get('/auth/instagram', (req, res) => {
-  const chatbotId = req.query.chatbotId
-  const url =
-    `https://api.instagram.com/oauth/authorize?` +
-    `client_id=${process.env.META_APP_ID}` +
-    `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
-    `&scope=instagram_business_basic,instagram_business_manage_messages` +
-    `&response_type=code` +
-    `&state=${chatbotId}`
-  console.log("🔗 Redirecting to:", url)
+  const { chatbotId } = req.query
+
+  if (!chatbotId) {
+    return res.status(400).send("Missing chatbotId")
+  }
+
+  const params = new URLSearchParams({
+    client_id:     process.env.META_APP_ID,
+    redirect_uri:  REDIRECT_URI,
+    scope:         'instagram_business_basic,instagram_business_manage_messages',
+    response_type: 'code',
+    state:         chatbotId,   // passed back to callback so we know which bot to update
+  })
+
+  const url = `https://api.instagram.com/oauth/authorize?${params}`
+  console.log("🔗 Redirecting to Instagram OAuth:", url)
   res.redirect(url)
 })
 
 // ── Instagram OAuth — callback ───────────────────────────────────────────────
+// Instagram redirects back here after user approves
 app.get('/auth/instagram/callback', async (req, res) => {
   const { code, state: chatbotId, error } = req.query
 
   if (error || !code) {
-    console.log("User cancelled or no code received")
+    console.log("❌ User cancelled or no code received:", error)
     return res.redirect(`${process.env.FRONTEND_URL}/Dashboard?instagram=failed`)
   }
 
   try {
-    console.log("📥 Callback hit with code:", code?.slice(0, 20))
-    console.log("📤 Using redirect_uri:", REDIRECT_URI)
-    console.log("📤 Using client_id:", process.env.META_APP_ID)
+    console.log("📥 Callback — code:", code?.slice(0, 20), "| chatbotId:", chatbotId)
 
-    // Step 1 — Exchange code for short-lived Instagram User Access Token
+    // Step 1 — Exchange code for short-lived token
     const params = new URLSearchParams()
     params.append('client_id',     process.env.META_APP_ID)
     params.append('client_secret', process.env.META_APP_SECRET)
@@ -76,16 +83,14 @@ app.get('/auth/instagram/callback', async (req, res) => {
     params.append('redirect_uri',  REDIRECT_URI)
     params.append('code',          code)
 
-    const tokenRes = await fetch(`https://api.instagram.com/oauth/access_token`, {
+    const tokenRes = await fetch('https://api.instagram.com/oauth/access_token', {
       method: 'POST',
-      body: params
+      body:   params,
     })
     const tokenData = await tokenRes.json()
-    console.log("🔑 Short-lived token data:", JSON.stringify(tokenData))
+    console.log("🔑 Short-lived token:", JSON.stringify(tokenData))
 
     const shortLivedToken = tokenData.access_token
-    const instagramUserId = tokenData.user_id
-
     if (!shortLivedToken) {
       console.error("❌ No access token:", tokenData)
       return res.redirect(`${process.env.FRONTEND_URL}/Dashboard?instagram=failed`)
@@ -99,7 +104,7 @@ app.get('/auth/instagram/callback', async (req, res) => {
       `&access_token=${shortLivedToken}`
     )
     const llData = await llRes.json()
-    console.log("🔑 Long-lived token data:", JSON.stringify(llData))
+    console.log("🔑 Long-lived token:", JSON.stringify(llData))
 
     const longLivedToken = llData.access_token
     if (!longLivedToken) {
@@ -107,7 +112,7 @@ app.get('/auth/instagram/callback', async (req, res) => {
       return res.redirect(`${process.env.FRONTEND_URL}/Dashboard?instagram=failed`)
     }
 
-    // Step 3 — Get Instagram Business Account ID
+    // Step 3 — Get Instagram user ID
     const igRes = await fetch(
       `https://graph.instagram.com/v19.0/me?fields=id,name,username&access_token=${longLivedToken}`
     )
@@ -120,7 +125,7 @@ app.get('/auth/instagram/callback', async (req, res) => {
       return res.redirect(`${process.env.FRONTEND_URL}/Dashboard?instagram=failed`)
     }
 
-    // Step 4 — Save to Supabase
+    // Step 4 — Save token + instagram ID to Supabase
     const { data, error: supabaseError } = await supabaseAdmin
       .from('chatbots')
       .update({
@@ -130,7 +135,7 @@ app.get('/auth/instagram/callback', async (req, res) => {
       .eq('id', chatbotId)
       .select()
 
-    console.log("📝 Supabase result:", JSON.stringify(data), "error:", supabaseError)
+    console.log("📝 Supabase update:", JSON.stringify(data), "| error:", supabaseError)
 
     if (supabaseError) {
       console.error("❌ Supabase error:", supabaseError)
@@ -148,6 +153,8 @@ app.get('/auth/instagram/callback', async (req, res) => {
 
 app.use("/api/billing", billingRoutes);
 app.use("/api/webhook", webhookRoutes);
+
+app.get('/check', (req,res) =>  res.status(200).json({ status: 'ok' }))
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`)

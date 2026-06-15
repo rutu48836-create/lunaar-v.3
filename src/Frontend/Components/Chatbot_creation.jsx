@@ -58,10 +58,14 @@ const {user,loading} = useAuth();
                 <small>Add custom branding to make it look professinal</small><br/>
             
             <label>Agent-Logo</label><br/>
-    <input type="file" style={{fontSize:"8px"}} accept="image/*"   onChange={(e) => setLogo(e.target.files[0])} required
- /><br/>
+    <input type="file" style={{fontSize:"8px"}} accept="image/*"  onChange={(e) => setLogo(e.target.files[0])} required
+ id="logo"/>
 
-                <label style={{marginTop:"30px"}}>Color</label><br/>
+ <label for="logo" className={styles.custom_button} placeholder="Upload Pdfs,text,spreadsheet  🗎">
+ <small>📂 Upload Logo</small>
+</label><br/>
+
+<label style={{marginTop:"30px"}}>Choose Color</label><br/>
 <input type="color" value={color} onChange={(e) => setColor(e.target.value)}/>
 
   <div className={styles.btn_wrapper}>
@@ -115,6 +119,7 @@ const Create_bot = async () => {
 
   if (!name) return alert("Enter a name!");
   if (!user) return alert("No user found");
+  if(logo === null) return alert("Upload a logo");
 
   const logoUrl = await Upload_logo();
 
@@ -151,11 +156,15 @@ const Create_bot = async () => {
                 <small>Train your chat agent by adding different kind of sources</small><br/>
             
             <label>Prompt</label><br/>
-    <textarea type="text" style={{fontSize:"12px"}} onChange={(e) => setPrompt(e.target.value)} value={prompt}
+    <textarea type="text" style={{fontSize:"12px"}} onChange={(e) => setPrompt(e.target.value)} value={prompt} placeholder="Type something"
  required/><br/>
 
                 <label style={{marginTop:"30px"}}>Upload Knowledge</label><br/>
-<input type="file" onChange={(e) => setTrainingFile(e.target.files[0])} accept="application/pdf, text/plain, text/csv, text/markdown"/>
+<input type="file" onChange={(e) => setTrainingFile(e.target.files[0])} accept="application/pdf, text/plain, text/csv, text/markdown" id="file-upload"/>
+
+<label for="file-upload" className={styles.custom_button} placeholder="Upload Pdfs,text,spreadsheet  🗎">
+ <small>📄 Upload Pdfs,text,spreadsheet</small>
+</label>
 
   <div className={styles.btn_wrapper}>
     <button onClick={() => Create_bot()}>Create</button>
@@ -167,46 +176,12 @@ const Create_bot = async () => {
     )
 }
 
-function Step_4({ chatbotId }) {
+export function Step_4({ chatbotId }) {
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
-  const [pageId, setPageId] = useState("")
-  const [connected, setConnected] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  const connectInstagram = async () => {
-    if (!pageId.trim()) return alert("Please enter your Instagram Page ID")
-    setLoading(true)
-
-    const { error } = await supabase
-      .from("chatbots")
-      .update({ instagram_page_id: pageId.trim() })
-      .eq("id", chatbotId)
-
-    setLoading(false)
-
-    if (error) {
-      console.error(error)
-      return alert("Failed to connect Instagram")
-    }
-
-    setConnected(true)
-  }
-
-  if (connected) {
-    return (
-      <div className={styles.Steps_container}>
-        <div className={styles.Head}>
-          <h3 onClick={() => window.location.reload()}><MoveLeft size={14} />Back</h3>
-        </div>
-        <div className={styles.Steps_card}>
-          <h1>You're live 🎉</h1>
-          <small>Your chatbot is created and connected to Instagram. Users who DM your Instagram account will now get AI replies.</small>
-          <div className={styles.btn_wrapper}>
-            <button onClick={() => window.location.reload()}>Go to Dashboard</button>
-          </div>
-        </div>
-      </div>
-    )
+  const connectInstagram = () => {
+    if (!chatbotId) return alert("Chatbot not ready, please wait.")
+    window.location.href = `${BACKEND_URL}/auth/instagram?chatbotId=${chatbotId}`
   }
 
   return (
@@ -218,21 +193,9 @@ function Step_4({ chatbotId }) {
         <h1>Connect Instagram</h1>
         <small>Link your Instagram Business account so your chatbot can reply to DMs automatically.</small>
 
-        <label>Instagram Page ID</label><br />
-        <input
-          type="text"
-          placeholder="e.g. 17841400000000000"
-          value={pageId}
-          onChange={(e) => setPageId(e.target.value)}
-        /><br />
-
-        <small style={{ marginTop: "10px", fontSize: "11px", color: "#9e9898", lineHeight: "1.6" }}>
-          Find this in Meta dashboard → Use Cases → Instagram → API Setup → under your connected account.
-        </small>
-
         <div className={styles.btn_wrapper}>
-          <button onClick={connectInstagram} disabled={loading}>
-            {loading ? "Connecting..." : "Connect Instagram"}
+          <button onClick={connectInstagram}>
+            Connect Instagram
           </button>
           <button onClick={() => window.location.reload()}>Skip for now</button>
         </div>
@@ -250,11 +213,36 @@ const [type,setType] = useState("Customer_Care")
 const [color,setColor] = useState("#ffffff")
 const [logo,setLogo] = useState(null)
 const [prompt,setPrompt] = useState("")
+const [data,setData] = useState(null)
+
+const {user} = useAuth();
+
+useEffect(() => {
+
+const Profile_Check = async () => {
+
+const {data,error} = await supabase
+.from("profiles")
+.select("*")
+.eq("id",user.id)
+
+if(error){
+  console.error(error)
+  return;
+}
+
+setData(data[0])
+
+}
+
+Profile_Check()
+
+},[])
 
 
 if(step === 1) return <Step_1 onNext={() => setStep(2)} step={step} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor}/>
 if(step === 2) return <Step_2 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt}/>
 if(step === 3) return <Step_3 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt} setChatbotId={setChatbotId}/>
-if(step === 4) return <Step_4 chatbotId={chatbotId} />
+if(step === 4 && data.plan === "Growth") return <Step_4 chatbotId={chatbotId} />
 
 }

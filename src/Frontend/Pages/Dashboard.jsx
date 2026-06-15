@@ -7,12 +7,16 @@ import { Plus, Pointer } from "lucide-react"
 import { Form_container } from "../Components/Chatbot_creation"
 import { supabase } from "../Components/supabase"
 import { Share } from "lucide-react"
-import { Navigate, useNavigate } from "react-router"
-import {Ellipsis} from "lucide-react"
+import { Navigate, useNavigate} from "react-router"
+import {Ellipsis,Trash2,Zap,SquarePen,CalendarDays,MoveRight,Link} from "lucide-react"
+import {Step_4} from "../Components/Chatbot_creation.jsx"
+import calendar from "../assets/calendar.jpg"
+import instagram from "../assets/instagram.avif"
 
 function Main_Content(){
 
-  const backend_url = import.meta.env.BACKEND_URL
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+  const frontend_url = import.meta.env.VITE_FRONTEND_URL;
 
   const navigate = useNavigate()
   const {user} = useAuth()
@@ -22,6 +26,34 @@ function Main_Content(){
   const [selected_chatbot, setSelected_chatbot] = useState(null)
   const [leads_loading, setLeads_loading] = useState(false)
   const [task_list_active,setTask_list_active] = useState(null)
+  const [step,setStep] = useState(1)
+  const [chatbotId, setChatbotId] = useState(null)
+  const [chatbot_id_for_ig,setChatbot_id_for_ig] = useState(null)
+  
+  const [profile,setProfile] = useState(null)
+
+useEffect(() => {
+
+const Profile_Check = async () => {
+
+const {data,error} = await supabase
+.from("profiles")
+.select("*")
+.eq("id",user.id)
+
+if(error){
+  console.error(error)
+  return;
+}
+
+setProfile(data[0])
+
+}
+
+Profile_Check()
+
+},[])
+
 
   useEffect(() => {
     const check_bots = async() => {
@@ -69,24 +101,23 @@ function Main_Content(){
 
   const connectGoogleCalendar = (chatbot) => {
   const params = new URLSearchParams({
-    chatbot_id: chatbot.id,
-owner_id: user.id,
+  chatbot_id: chatbot.id,
+  owner_id: user.id,
   });
   window.location.href = `${backend_url}/auth/google?${params}`;
 };
 
-
-  if(showForm) return <Form_container onComplete={() => setShowForm(false)} />
+  if(showForm) return <Form_container onComplete={() => setShowForm(false)} setStep={setStep} step={step} chatbotId={chatbotId} setChatbotId={setChatbotId}/>
 
   return(
     <div className={styles.Main_content}>
 
       <div className={styles.Main_content_head}>
         <h2>Projects</h2>
-        <button onClick={() => setShowForm(true)}><Plus size={20}/><span>New Chatbot</span></button>
+        <button onClick={() => setShowForm(true)}><SquarePen size={20}/><span>New Chatbot</span></button>
       </div>
 
-      <div className={styles.new_project}>        <button onClick={() => setShowForm(true)}><Plus size={20}/><span>New Chatbot</span></button>
+      <div className={styles.new_project}>        <button onClick={() => setShowForm(true)}><SquarePen size={20}/><span>New Chatbot</span></button>
 </div>
 
       <div className={styles.Chatbots_wrapper}>
@@ -122,21 +153,31 @@ owner_id: user.id,
                   <img src={chatbot?.logo_url}/> <span>{chatbot.name}</span>
                   </div>
                   <div className={styles.right_side_head} style={{ position: 'relative' }}>
+                    <button onClick={() => delete_chatbot(chatbot.id)}><Trash2 size={20} color="#f54d4d"/></button>
   <button onClick={() => setTask_list_active(task_list_active?.id === chatbot.id ? null : chatbot)}>
     <Ellipsis size={16}/>
   </button>                       {task_list_active?.id === chatbot.id && (
     <div className={styles.task_list_card}>
       
     <div className={styles.task_list_btns}>
-          {chatbot.type === "Leads"  && <button onClick={() => Fetch_leads(chatbot)} className={styles.lead_button}>Leads</button> } 
-                 {chatbot.type === "Appointment"  && <button onClick={() => connectGoogleCalendar(chatbot)} className={styles.calendar_button}>Connect</button>} 
+          {chatbot.type === "Leads"  && <button onClick={() => Fetch_leads(chatbot)} className={styles.lead_button}>Check Leads <MoveRight size={20}/></button> } 
+                 {chatbot.type === "Appointment"  && <button onClick={() => connectGoogleCalendar(chatbot)} className={styles.calendar_button}>Connect with <img src={calendar} alt="cal" style={{width:"34px",height:"34px"}}/></button>} 
          
          
-         <button className={styles.delete_button} onClick={() => delete_chatbot(chatbot.id)}>Delete</button>        
+         <button className={styles.instagram_button} onClick={() => 
+          setChatbot_id_for_ig(chatbot.id)
+         } disabled={profile?.plan !== "Growth"}>Connect with <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c850c0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+  </svg></button>        
          </div>
       <ul>
         <li><span>type</span> <h4>{chatbot.type}</h4></li>
-                <li><span>Message</span> <h4>{chatbot.message_count}</h4></li>
+                <li><span>Message</span> <h4>{chatbot.message_count || 0}</h4></li>
+                <li><span>Message Tokens</span> <h4>{chatbot.message_limit}</h4></li>
+                <li><span>Copy link</span> <button className={styles.copy_link_btn} onClick={() => {
+                  navigator.clipboard.writeText(`${frontend_url}/chat/${chatbot.share_token}`)
+                  alert('link copied')
+                }}><Link size={18}/></button></li>
 
       </ul>
     </div>
@@ -149,6 +190,8 @@ owner_id: user.id,
           ))
         }
       </div>
+
+      {chatbot_id_for_ig && <Step_4 chatbotId={chatbot_id_for_ig} setChatbot_id={setChatbot_id_for_ig} /> }
 
 
       {selected_chatbot && (

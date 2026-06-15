@@ -1,10 +1,9 @@
 import {razorpay} from "../config/razorpay.js"
 import express from "express"
 import crypto from "crypto"
-import {supabase} from "..config/supabase.js"
+import {supabase} from "../config/supabase.js"
 
 const router = express.Router();
-
 router.post("/",async (req,res) => {
 
    const event = req.body.event;
@@ -14,12 +13,12 @@ router.post("/",async (req,res) => {
     const user_id = sub.notes.user_id;
 
    const {data:user,error:userError} = await supabase
-   .from("profile")
+   .from("profiles")
    .update({
-    plan:sub.plan_id,
+    plan:"Growth",
     razorpay_subscription_id:sub.id,
     subscription_status:sub.status,
-    message_limit:1000
+    total_messages_limit:1000
    })
    .eq("id",user_id)
 

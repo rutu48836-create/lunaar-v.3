@@ -60,10 +60,19 @@ export function ChatPage() {
       setMessages(prev => [...prev, botMessage])
       console.log(data)
 
-      const { data: message_count, error: increment_error } = await supabase
-        .from("chatbots")
-        .update({ message_count: (chatbot.message_count || 0) + 1 })
-        .eq("id", chatbot.id)
+     // Replace the profiles update block with this:
+const { data: profile, error: profile_error } = await supabase
+  .from("profiles")
+  .select("total_messages")
+  .eq("id", user.id)
+  .single()
+
+if (profile_error) { console.log(profile_error); return }
+
+const { error: increment_error } = await supabase
+  .from("profiles")
+  .update({ total_messages: (profile.total_messages || 0) + 1 })
+  .eq("id", user.id)
 
       if (increment_error) {
         console.log(increment_error)
@@ -90,6 +99,28 @@ export function ChatPage() {
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const Check_limit_and_message = async () => {
+
+  const {data,error} = await supabase
+  .from("profiles")
+  .select("total_messages_limit,total_messages")
+  .eq("id", user.id)
+  .single()
+
+   if(error){
+    console.log(error)
+   }
+
+   if(data.total_messages >= data.total_messages_limit){
+    alert("The chatbot has reached it maximum message limit for this month,consider upgrading your plan to increase limit")
+   }
+
+   else{
+    Send_Message()
+   }
+
   }
 
 
@@ -205,16 +236,9 @@ export function ChatPage() {
           value={user_message}
           onChange={(e) => setUser_message(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && Send_Message()}
-          placeholder="Type something"
+          placeholder="AI agent is made using lunaar.online"
         />
-        <button onClick={() => {
-          if (chatbot.message_count === chatbot.message_limit) {
-            alert('chatbot has reached its maximum message limit')
-            return;
-          } else {
-            Send_Message()
-          }
-        }} style={{ "--bot-color": chatbot ? `color-mix(in srgb, ${chatbot.color} 84%, white)` : "#ffffff", color: getTextColor(chatbot.color) }}>
+        <button onClick={() => Check_limit_and_message()} style={{ "--bot-color": chatbot ? `color-mix(in srgb, ${chatbot.color} 84%, white)` : "#ffffff", color: getTextColor(chatbot.color) }}>
           <Send size={18} />
         </button>
       </div>
