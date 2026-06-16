@@ -19,7 +19,7 @@ function Main_Content(){
   const frontend_url = import.meta.env.VITE_FRONTEND_URL;
 
   const navigate = useNavigate()
-  const {user} = useAuth()
+  const {user,loading} = useAuth()
   const [showForm, setShowForm] = useState(false)
   const [chatbots, setChatbots] = useState([])
   const [lead_list, setLead_list] = useState([])
@@ -32,9 +32,13 @@ function Main_Content(){
   
   const [profile,setProfile] = useState(null)
 
+
 useEffect(() => {
 
 const Profile_Check = async () => {
+
+  if(loading) return (<h2>loading.....</h2>)
+if(!user && !loading) navigate("/auth");
 
 const {data,error} = await supabase
 .from("profiles")
@@ -52,7 +56,7 @@ setProfile(data[0])
 
 Profile_Check()
 
-},[])
+},[user,loading])
 
 
   useEffect(() => {

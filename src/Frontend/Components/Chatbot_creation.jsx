@@ -132,6 +132,12 @@ const Create_bot = async () => {
 
   if (error) { console.error(error); return; }
 
+  const {data:profile,error:profileErr} = await supabase
+  .from("profiles")
+  .update({chatbot_count:(data.chatbot_count || 0) + 1})
+  .eq("id", user.id)
+  .single();
+
   const trainingText = await Extract_and_store(trainingFile);
 
   const { error: updateError } = await supabase.from("chatbots")

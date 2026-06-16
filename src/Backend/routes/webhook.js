@@ -18,7 +18,8 @@ router.post("/",async (req,res) => {
     plan:"Growth",
     razorpay_subscription_id:sub.id,
     subscription_status:sub.status,
-    total_messages_limit:1000
+    total_messages_limit:1000,
+    chatbot_limit:3
    })
    .eq("id",user_id)
 

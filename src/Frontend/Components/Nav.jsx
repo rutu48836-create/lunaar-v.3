@@ -230,11 +230,11 @@ export function SideBar({profile_active,setProfile_active,active,setActive}){
 
 
                               <div className={styles.row}>
-                <span>Chatbots</span> <h4>{usage?.length || 0} / {user_details.plan === "free" ? 1 : 3}</h4>
+                <span>Chatbots</span> <h4>{usage?.length || 0} / {user_details.chatbot_limit}</h4>
                 </div>
 
                               <div className={styles.row}>  
-                <span>Messsage Counts</span> <h4>{user_details.total_messages} / {user_details.total_messages_limit}</h4>
+                <span>Messsage Counts</span> <h4>{user_details.total_messages || 0} / {user_details.total_messages_limit || 100}</h4>
                 </div>
                 
                  <button onClick={handleUpgrade} className={styles.Upgrade_btn}>Unlock More</button>

@@ -37,14 +37,15 @@ export const handleOAuthCallback = async (req, res) => {
         access_token: tokens.access_token,
         refresh_token: tokens.refresh_token,
         expires_at: new Date(tokens.expiry_date).toISOString(),
+
       }, { onConflict: "chatbot_id" });
 
     if (error) throw error;
 
     // Redirect back to your dashboard
-    res.redirect(`http://localhost:5173/dashboard?connected=true`);
+    res.redirect(`https://lunaar.online/dashboard?connected=true`);
   } catch (err) {
     console.error("OAuth callback error:", err);
-    res.redirect(`http://localhost:5173/dashboard?connected=false`);
+    res.redirect(`https://lunaar.online/dashboard?connected=false`);
   }
 };
