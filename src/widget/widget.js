@@ -1,5 +1,5 @@
 (function () {
-  const BACKEND_URL = import.meta.env.BACKEND_URL;
+  const BACKEND_URL = "https://lunaar-v-3.onrender.com";
   const CHAT_BASE_URL = "https://lunaar.online";
  
   const currentScript = document.currentScript;
