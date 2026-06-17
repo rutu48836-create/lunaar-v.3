@@ -22,27 +22,22 @@ const {data, error} = await supabase
 
 console.log("TOKEN:", JSON.stringify(share_token))
 
-  const chatbot = data?.[0] 
-  const type = chatbot.type;
-  const chatbot_id = chatbot.id;
+const chatbot = data?.[0]
 
-if (error) {
-  return res.status(500).json({ error})
-}
+if (error) return res.status(500).json({ error })
+if (!chatbot) return res.status(404).json({ error: "Chatbot not found" })
 
-if (!chatbot) {
-  return res.status(404).json({ error: "Chatbot not found" })
-}
+const type = chatbot.type
+const chatbot_id = chatbot.id
 
-console.log("data:",chatbot)
+console.log("data:", chatbot)
 
 const chatbotContext = `
 name: ${chatbot.name || ""}
 prompt: ${chatbot.prompt || ""}
 `
 
-  const today = new Date().toLocaleDateString();
-
+const today = new Date().toLocaleDateString()
 
 const systemPrompt_faq = `
 CRITICAL INSTRUCTION: Respond ONLY with raw JSON. No preamble, no markdown, no text outside the JSON.
@@ -73,6 +68,7 @@ RESPONSE FORMAT — always exactly this, nothing else:
   "message": "your reply here with emoji"
 }
 `
+
 const systemPrompt_lead = `
 CRITICAL INSTRUCTION: You MUST respond ONLY with raw JSON. No greetings, no text before or after. Just the JSON object.
 
@@ -115,7 +111,7 @@ YOUR RESPONSE MUST ALWAYS BE EXACTLY THIS JSON STRUCTURE AND NOTHING ELSE:
     "phone": null,
     "interest_in": null
   }
-}` ;
+}`
 
 const systemPrompt_appointment = `
 CRITICAL: You MUST respond ONLY with raw JSON. Absolutely no text before or after. No greetings. No explanations. ONLY the JSON object.
@@ -164,10 +160,10 @@ YOUR RESPONSE MUST ALWAYS BE EXACTLY THIS STRUCTURE — NOTHING ELSE:
     "time": null
   }
 }
-`;
+`
 
-const Prompt = type === "Leads" ? systemPrompt_lead : systemPrompt_faq;
-const finalPrompt = type === "Appointment" ? systemPrompt_appointment : Prompt;
+const Prompt = type === "Leads" ? systemPrompt_lead : systemPrompt_faq
+const finalPrompt = type === "Appointment" ? systemPrompt_appointment : Prompt
 
 function safeParseJSON(raw) {
   try {
@@ -196,18 +192,18 @@ const response = await fetch(
     method: "POST",
     body: JSON.stringify({
       model: "llama-3.1-8b-instant",
-messages: [
-  { role: "system", content: finalPrompt},
-  ...history,
-  { role: "user", content: user_message }
-],
+      messages: [
+        { role: "system", content: finalPrompt },
+        ...history,
+        { role: "user", content: user_message }
+      ],
       temperature: 0.7,
       max_tokens: 500,
     }),
   }
-);
+)
 
-const result = await response.json();
+const result = await response.json()
 console.log("groq result:", result)
 const raw = result.choices?.[0]?.message?.content
 
@@ -223,45 +219,43 @@ if (type === "Leads") {
 }
 
 if (type === "Appointment") {
+  try {
+    const parsed = safeParseJSON(raw)
 
-  try{
-  const parsed = safeParseJSON(raw)
+    if (!parsed) {
+      console.warn("Appointment JSON parse failed, raw:", raw)
+      return res.json({ reply: raw, appointment: null })
+    }
 
-  if (!parsed) {
-    console.warn("Appointment JSON parse failed, raw:", raw)
-    return res.json({ reply: raw, appointment: null })
+    if (parsed.appointment?.ready === true) {
+      const { name, email, date, time } = parsed.appointment
+
+      const googleEventId = await createCalendarEvent(chatbot_id, { name, email, date, time })
+
+      await supabase.from("appointments").insert({
+        chatbot_id,
+        name, email, date, time,
+        google_event_id: googleEventId,
+      })
+
+      return res.json({
+        reply: parsed.message,
+        appointment: { name, email, date, time },
+      })
+    }
+
+    return res.json({ reply: parsed.message, appointment: null })
+
+  } catch (err) {
+    console.log(err)
   }
-
-  if (parsed.appointment?.ready === true) {
-    const { name, email, date, time } = parsed.appointment
-
-    const googleEventId = await createCalendarEvent(chatbot_id, { name, email, date, time })
-
-    await supabase.from("appointments").insert({
-      chatbot_id,
-      name, email, date, time,
-      google_event_id: googleEventId,
-    })
-
-    return res.json({
-      reply: parsed.message,
-      appointment: { name, email, date, time },
-    })
-  }
-
-  return res.json({ reply: parsed.message, appointment: null })
-  }
-  
-catch(err){
-  console.log(err)
 }
 
-}
-
+return res.json({ reply: safeParseJSON(raw)?.message ?? raw })
 }
 catch(error){
-    console.error("SERVER ERROR:",error)
-    return res.status(500).json({error:"Internal server error"})
+    console.error("SERVER ERROR:", error)
+    return res.status(500).json({ error: "Internal server error" })
 }
 
 }

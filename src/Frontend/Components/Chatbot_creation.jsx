@@ -61,7 +61,7 @@ const {user,loading} = useAuth();
     <input type="file" style={{fontSize:"8px"}} accept="image/*"  onChange={(e) => setLogo(e.target.files[0])} required
  id="logo"/>
 
- <label for="logo" className={styles.custom_button} placeholder="Upload Pdfs,text,spreadsheet  🗎">
+ <label htmlFor="logo" className={styles.custom_button} placeholder="Upload Pdfs,text,spreadsheet  🗎">
  <small>📂 Upload Logo</small>
 </label><br/>
 
@@ -79,10 +79,11 @@ const {user,loading} = useAuth();
 }
 
 
-function Step_3({onNext,setStep,name,color,type,logo,setName,setType,setColor,setLogo,setPrompt,prompt,setChatbotId}){
+function Step_3({onNext,setStep,name,color,type,logo,setName,setType,setColor,setLogo,setPrompt,prompt,setChatbotId,profile}){
 
 const {user,loading} = useAuth();
 const [trainingFile,setTrainingFile] = useState(null)
+const [creating,setLoading] = useState(false)
 
 const Upload_logo = async () => {
 if(!logo) return null;
@@ -121,6 +122,8 @@ const Create_bot = async () => {
   if (!user) return alert("No user found");
   if(logo === null) return alert("Upload a logo");
 
+  setLoading(true)
+
   const logoUrl = await Upload_logo();
 
   const generate_token = () => crypto.randomUUID().replace(/-/g, "").slice(0, 12);;
@@ -146,8 +149,17 @@ const Create_bot = async () => {
 
   if (updateError) { console.error(updateError); return; }
 
+  const {data:user,error:userror} = await supabase
+  .from("profiles")
+  .update({ chatbot_count: (profile.chatbot_count || 0) + 1 })
+
   setChatbotId(data.id)
-  setStep(4)
+  if(data.plan != "free"){
+    setStep(4)
+  }
+  else{
+     window.location.reload()
+  }
 };
 
     return(
@@ -168,12 +180,12 @@ const Create_bot = async () => {
                 <label style={{marginTop:"30px"}}>Upload Knowledge</label><br/>
 <input type="file" onChange={(e) => setTrainingFile(e.target.files[0])} accept="application/pdf, text/plain, text/csv, text/markdown" id="file-upload"/>
 
-<label for="file-upload" className={styles.custom_button} placeholder="Upload Pdfs,text,spreadsheet  🗎">
+<label htmlFor="file-upload" className={styles.custom_button} placeholder="Upload Pdfs,text,spreadsheet  🗎">
  <small>📄 Upload Pdfs,text,spreadsheet</small>
 </label>
 
   <div className={styles.btn_wrapper}>
-    <button onClick={() => Create_bot()}>Create</button>
+    <button onClick={() => Create_bot()} disabled={creating}>Create</button>
     <button onClick={() => setStep(2)}>Previous</button>
   </div>
            </div>
@@ -198,7 +210,6 @@ export function Step_4({ chatbotId }) {
       <div className={styles.Steps_card}>
         <h1>Connect Instagram</h1>
         <small>Link your Instagram Business account so your chatbot can reply to DMs automatically.</small>
-
         <div className={styles.btn_wrapper}>
           <button onClick={connectInstagram}>
             Connect Instagram
@@ -219,7 +230,7 @@ const [type,setType] = useState("Customer_Care")
 const [color,setColor] = useState("#ffffff")
 const [logo,setLogo] = useState(null)
 const [prompt,setPrompt] = useState("")
-const [data,setData] = useState(null)
+const [profile,setData] = useState(null)
 
 const {user} = useAuth();
 
@@ -248,7 +259,7 @@ Profile_Check()
 
 if(step === 1) return <Step_1 onNext={() => setStep(2)} step={step} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor}/>
 if(step === 2) return <Step_2 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt}/>
-if(step === 3) return <Step_3 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt} setChatbotId={setChatbotId}/>
+if(step === 3) return <Step_3 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt} setChatbotId={setChatbotId} profile={profile}/>
 if(step === 4 && data.plan === "Growth") return <Step_4 chatbotId={chatbotId} />
 
 }
