@@ -126,20 +126,23 @@ const Create_bot = async () => {
 
   const logoUrl = await Upload_logo();
 
-  const generate_token = () => crypto.randomUUID().replace(/-/g, "").slice(0, 12);;
+  const generate_token = () => crypto.randomUUID().replace(/-/g, "").slice(0, 12);
 
   const { data, error } = await supabase.from("chatbots")
     .insert({ owner_id: user.id, name, logo_url: logoUrl, type, color, prompt,message_limit:200,share_token:generate_token()})
     .select()
     .single();
 
-  if (error) { console.error(error); return; }
+  if (error) { console.error(error); setLoading(false); return; }
 
-  const {data:profile,error:profileErr} = await supabase
-  .from("profiles")
-  .update({chatbot_count:(data.chatbot_count || 0) + 1})
-  .eq("id", user.id)
-  .single();
+  const { data: updatedProfile, error: profileErr } = await supabase
+    .from("profiles")
+    .update({ chatbot_count: (profile?.chatbot_count || 0) + 1 })
+    .eq("id", user.id)
+    .select()
+    .single();
+
+  if (profileErr) { console.error(profileErr); }
 
   const trainingText = await Extract_and_store(trainingFile);
 
@@ -147,13 +150,11 @@ const Create_bot = async () => {
     .update({ file_text: trainingText })
     .eq("id", data.id);
 
-  if (updateError) { console.error(updateError); return; }
-
-  const {data:user,error:userror} = await supabase
-  .from("profiles")
-  .update({ chatbot_count: (profile.chatbot_count || 0) + 1 })
+  if (updateError) { console.error(updateError); setLoading(false); return; }
 
   setChatbotId(data.id)
+  setLoading(false)
+
   if(data.plan != "free"){
     setStep(4)
   }
@@ -232,9 +233,11 @@ const [logo,setLogo] = useState(null)
 const [prompt,setPrompt] = useState("")
 const [profile,setData] = useState(null)
 
-const {user} = useAuth();
+const {user,loading} = useAuth();
 
 useEffect(() => {
+
+if(loading || !user) return;
 
 const Profile_Check = async () => {
 
@@ -254,12 +257,12 @@ setData(data[0])
 
 Profile_Check()
 
-},[])
+},[loading,user])
 
 
 if(step === 1) return <Step_1 onNext={() => setStep(2)} step={step} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor}/>
 if(step === 2) return <Step_2 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt}/>
 if(step === 3) return <Step_3 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt} setChatbotId={setChatbotId} profile={profile}/>
-if(step === 4 && data.plan === "Growth") return <Step_4 chatbotId={chatbotId} />
+if(step === 4 && profile?.plan != "free") return <Step_4 chatbotId={chatbotId} />
 
 }
