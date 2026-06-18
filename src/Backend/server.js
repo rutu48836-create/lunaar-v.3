@@ -15,6 +15,9 @@ const PORT = process.env.PORT || 5000
 const REDIRECT_URI = 'https://lunaar-v-3.onrender.com/auth/instagram/callback'
 
 app.use(cors())
+
+app.use("/api/webhook", express.raw({ type: "application/json" }), webhookRoutes);
+
 app.use(express.json())
 
 app.post('/api/chat', Chat_Handler)
@@ -152,7 +155,6 @@ app.get('/auth/instagram/callback', async (req, res) => {
 })
 
 app.use("/api/billing", billingRoutes);
-app.use("/api/webhook", webhookRoutes);
 
 app.get('/check', (req,res) =>  res.status(200).json({ status: 'ok' }))
 

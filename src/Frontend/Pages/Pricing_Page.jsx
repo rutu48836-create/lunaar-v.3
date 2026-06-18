@@ -11,6 +11,7 @@ export function Pricing_Page(){
 
 const {user} = useAuth()
 const navigate = useNavigate()
+const [plan,setPlan] = useState("free")
 
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
@@ -25,7 +26,7 @@ const loadRazorpay = () =>
     document.body.appendChild(script);
   });
 
-   const handleUpgrade = async () => {
+   const handleUpgrade = async (plan_id) => {
 
 
       const loaded = await loadRazorpay();
@@ -38,7 +39,7 @@ const loadRazorpay = () =>
       },
       body: JSON.stringify({
         user_id: user.id,
-        plan_id: "Growth",
+        plan_id
       }),
     });
 
@@ -60,14 +61,14 @@ const loadRazorpay = () =>
 
   }
 
-const Pro_plan = async () => {
+const Pro_plan = async (plan_id) => {
 
 if(!user){
     navigate("/Auth")
     return
 }
 
- handleUpgrade()
+ handleUpgrade(plan_id)
 
 }
 
@@ -94,7 +95,14 @@ return(
                 <li><div className={styles.check}><Check size={14}/></div>50 messages per month</li>
             </ul>
 
-            <button onClick={() => navigate("/Dashboard")}>Get Started</button>
+            <button onClick={() => 
+{
+
+Pro_plan("TEST")
+
+}
+
+            }>Get Started</button>
           </div>
 
         </div>
@@ -114,7 +122,33 @@ return(
                 <li><div className={styles.check}><Check size={14}/></div>1000 messages per month</li>
             </ul>
 
-            <button onClick={() => Pro_plan()} className={styles.upgrade_btn}>Upgrade</button>
+            <button onClick={() => {
+              Pro_plan("Growth")
+              
+            }} className={styles.upgrade_btn}>Upgrade</button>
+          </div>
+
+        </div>
+
+        <div className={styles.Pricing_card}>
+            <h2>Agency</h2>
+            <span>great for businesses who need more features and advance intergation</span>
+
+            <div className={styles.Price}><h1>₹999</h1>/<p>per month</p></div>
+
+          <div className={styles.Including_list}>
+            <h3>Includes</h3>
+            <ul>
+                <li><div className={styles.check}><Check size={14}/></div>1000 chatbot</li>
+                                                <li><div className={styles.check}><Check size={14}/></div>3 types of chatbot</li>
+                <li><div className={styles.check}><Check size={14}/></div>link & instagram intergation and widget</li>
+                <li><div className={styles.check}><Check size={14}/></div>12,000 messages per month</li>
+            </ul>
+
+            <button onClick={() => {
+              Pro_plan("Agency")
+              
+            }} className={styles.upgrade_btn}>Upgrade</button>
           </div>
 
         </div>

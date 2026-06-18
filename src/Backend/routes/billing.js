@@ -8,13 +8,13 @@ const router = express.Router();
 router.post("/create-subscription", async (req,res) => {
 console.log("new code")
  
- const {user_id} = req.body
-const plan_id = "Growth"
+ const {user_id,plan_id} = req.body
+
  
  const {data: plan} = await supabase
  .from("plans")
  .select('*')
- .eq("id","Growth")
+ .eq("id",plan_id)
  .single()
 
  console.log(`plan is`,plan)
