@@ -10,6 +10,7 @@ import {Landing} from "./Frontend/Pages/Landing.jsx"
 import { Features } from './Frontend/Pages/Features.jsx'
 import { PrivacyPolicy } from './Frontend/Pages/Privacy_policy.jsx'
 import {Pricing_Page} from "./Frontend/Pages/Pricing_Page.jsx"
+import {Refund} from "./Frontend/Pages/Refund.jsx"
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/features" element={<Features/>} />
                 <Route path="privacy-policy" element={<PrivacyPolicy/>}/>
                  <Route path="/pricing" element={<Pricing_Page/>}/>
+                 <Route path="/refund" element={<Refund/>}/>
       </Routes>
     </BrowserRouter>
     </AuthProvider>
