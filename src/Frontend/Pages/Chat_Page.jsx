@@ -3,7 +3,7 @@ import { supabase } from "../Components/supabase";
 import styles from "../Styles/Chat_Page.module.css";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../Components/AuthContext";
-import { Share, Send } from "lucide-react";
+import { Share, Send, Lock, X } from "lucide-react";
 
 export function ChatPage() {
 
@@ -17,6 +17,13 @@ export function ChatPage() {
   const [bookedAppointment, setBookedAppointment] = useState(null);
   const historyRef = useRef([]);
   const share_token = token;
+
+  const [showPassPrompt, setShowPassPrompt] = useState(false);
+  const [passInput, setPassInput] = useState("");
+  const [passError, setPassError] = useState("");
+  const [showLeads, setShowLeads] = useState(false);
+  const [leadList, setLeadList] = useState([]);
+  const [leadsLoading, setLeadsLoading] = useState(false);
 
   useEffect(() => {
     const check_chatbot = async () => {
@@ -155,6 +162,52 @@ export function ChatPage() {
     Send_Message();
   };
 
+  const Fetch_leads = async () => {
+    setLeadsLoading(true);
+    const { data, error } = await supabase
+      .from("leads")
+      .select("*")
+      .eq("chatbot_id", chatbot.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      setLeadsLoading(false);
+      return;
+    }
+
+    setLeadList(data);
+    setLeadsLoading(false);
+  };
+
+  const Check_pass_key = () => {
+    if (!chatbot?.pass_key) {
+      setPassError("This chatbot has no leads password set.");
+      return;
+    }
+
+    if (passInput === chatbot.pass_key) {
+      setPassError("");
+      setPassInput("");
+      setShowPassPrompt(false);
+      setShowLeads(true);
+      Fetch_leads();
+    } else {
+      setPassError("Incorrect password");
+    }
+  };
+
+  const getInitials = (name) => {
+    if (!name) return "?";
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  };
+
+  const formatDate = (iso) => {
+    return new Date(iso).toLocaleDateString("en-IN", {
+      day: "numeric", month: "short", year: "numeric"
+    });
+  };
+
 
   function getTextColor(bgColor) {
     let r, g, b;
@@ -232,6 +285,9 @@ export function ChatPage() {
             third-party iframes without explicit permissions anyway. */}
         {!isEmbedded && (
           <div className={styles.Right_side}>
+            {chatbot.type === "Leads" && (
+              <Lock size={20} onClick={() => setShowPassPrompt(true)} />
+            )}
             <Share size={20} onClick={async () => {
               await navigator.clipboard.writeText(`https://lunaar.online/chat/${chatbot.share_token}`);
               alert("Link copied!");
@@ -301,6 +357,77 @@ export function ChatPage() {
           <Send size={18} />
         </button>
       </div>
+
+      {showPassPrompt && (
+        <div className={styles.leads_overlay}>
+          <div className={styles.leads_panel} style={{ maxWidth: "320px" }}>
+            <div className={styles.leads_panel_head}>
+              <h2>Enter Password</h2>
+              <button className={styles.back_btn} onClick={() => { setShowPassPrompt(false); setPassInput(""); setPassError(""); }}><X size={18} /></button>
+            </div>
+            <input
+              type="password"
+              value={passInput}
+              onChange={(e) => setPassInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && Check_pass_key()}
+              placeholder="Leads password"
+              style={{ width: "100%", padding: "10px", margin: "12px 0", borderRadius: "8px", border: "1px solid #ccc" }}
+            />
+            {passError && <p style={{ color: "#f54d4d", fontSize: "13px" }}>{passError}</p>}
+            <button onClick={Check_pass_key} style={{ width: "100%" }} className={styles.unlock_btn}>Unlock</button>
+          </div>
+        </div>
+      )}
+
+      {showLeads && (
+        <div className={styles.leads_overlay}>
+          <div className={styles.leads_panel}>
+
+            <div className={styles.leads_panel_head}>
+              <div className={styles.leads_panel_title}>
+                <h2>Leads</h2>
+                <span className={styles.leads_badge}>{leadList.length} leads</span>
+              </div>
+              <button className={styles.back_btn} onClick={() => setShowLeads(false)}>← Back</button>
+            </div>
+
+            {leadsLoading ? (
+              <p className={styles.leads_empty}>Loading...</p>
+            ) : leadList.length === 0 ? (
+              <p className={styles.leads_empty}>No leads captured yet.</p>
+            ) : (
+              <div className={styles.leads_body}>
+                <table className={styles.leads_table}>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Phone</th>
+                      <th>Date</th>
+                      <th>Interest In</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {leadList.map((lead) => (
+                      <tr key={lead.id}>
+                        <td>
+                          <div className={styles.name_cell}>
+                            <div className={styles.avatar}>{getInitials(lead.name)}</div>
+                            {lead.name || "—"}
+                          </div>
+                        </td>
+                        <td><span className={styles.phone}>{lead.phone_no || "—"}</span></td>
+                        <td><span className={styles.date}>{formatDate(lead.created_at)}</span></td>
+                        <td><span className={styles.phone}>{lead.interest_in || "—"}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

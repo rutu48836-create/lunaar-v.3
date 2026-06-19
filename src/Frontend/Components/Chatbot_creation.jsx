@@ -79,7 +79,7 @@ const {user,loading} = useAuth();
 }
 
 
-function Step_3({onNext,setStep,name,color,type,logo,setName,setType,setColor,setLogo,setPrompt,prompt,setChatbotId,profile}){
+function Step_3({onNext,setStep,name,color,type,logo,setName,setType,setColor,setLogo,setPrompt,prompt,setChatbotId,profile,passKey,setPassKey}){
 
 const {user,loading} = useAuth();
 const [trainingFile,setTrainingFile] = useState(null)
@@ -122,6 +122,7 @@ const Create_bot = async () => {
   if (!name) return alert("Enter a name!");
   if (!user) return alert("No user found");
   if(logo === null) return alert("Upload a logo");
+  if(type === "Leads" && !passKey.trim()) return alert("Set a password to protect your leads");
 
   setLoading(true)
 
@@ -130,7 +131,7 @@ const Create_bot = async () => {
   const generate_token = () => crypto.randomUUID().replace(/-/g, "").slice(0, 12);
 
   const { data, error } = await supabase.from("chatbots")
-    .insert({ owner_id: user.id, name, logo_url: logoUrl, type, color, prompt,message_limit:200,share_token:generate_token()})
+    .insert({ owner_id: user.id, name, logo_url: logoUrl, type, color, prompt,message_limit:200,share_token:generate_token(),pass_key: type === "Leads" ? passKey : null})
     .select()
     .single();
 
@@ -186,6 +187,13 @@ const Create_bot = async () => {
  <small>{trainingFile ? `📄 ${trainingFile.name}` : "📄 Upload Pdfs,text,spreadsheet"}</small>
 </label>
 
+{type === "Leads" && (
+<>
+<label style={{marginTop:"30px"}}>Leads Password</label><br/>
+<input type="password" placeholder="Set a password to view leads" value={passKey} onChange={(e) => setPassKey(e.target.value)} required/><br/>
+</>
+)}
+
   <div className={styles.btn_wrapper}>
     <button onClick={() => Create_bot()} disabled={creating}>Create</button>
     <button onClick={() => setStep(2)}>Previous</button>
@@ -232,6 +240,7 @@ const [type,setType] = useState("Customer_Care")
 const [color,setColor] = useState("#ffffff")
 const [logo,setLogo] = useState(null)
 const [prompt,setPrompt] = useState("")
+const [passKey,setPassKey] = useState("")
 const [profile,setData] = useState(null)
 
 const {user,loading} = useAuth();
@@ -263,7 +272,7 @@ Profile_Check()
 
 if(step === 1) return <Step_1 onNext={() => setStep(2)} step={step} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor}/>
 if(step === 2) return <Step_2 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt}/>
-if(step === 3) return <Step_3 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt} setChatbotId={setChatbotId} profile={profile}/>
+if(step === 3) return <Step_3 step={step} setStep={setStep} name={name} setName={setName} type={type} setType={setType} color={color} setColor={setColor} logo={logo} setLogo={setLogo} prompt={prompt} setPrompt={setPrompt} setChatbotId={setChatbotId} profile={profile} passKey={passKey} setPassKey={setPassKey}/>
 if(step === 4 && profile?.plan != "free") return <Step_4 chatbotId={chatbotId} />
 
 }
