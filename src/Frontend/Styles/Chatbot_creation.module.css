@@ -1,3 +1,4 @@
+
 .Steps_container{
     min-width: 100vw;
     height: auto;
@@ -41,10 +42,16 @@
 .Steps_card{
     width: 35%;
     padding: 2rem;
-    min-height: 450px;
+    min-height: auto;
+    max-height: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     background: #fff;
     border-radius: 20px;
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .Steps_card h1{
@@ -173,8 +180,14 @@
 
 }
 
+.Steps_card textarea{
+    min-height: 40px;
+}
+
 @media(max-width:768px){
     .Steps_card{
-        width:80%;
+        width:90%;
+        max-height: 100%;
+        padding-bottom: 6rem;
     }
 }

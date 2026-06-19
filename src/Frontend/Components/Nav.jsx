@@ -1,7 +1,7 @@
 
 import {useState,useEffect} from "react"
 import styles from "../Styles/Nav.module.css"
-import {SendHorizontal,UserCircle,CircleQuestionMark,StickyNote,PlusCircle,SquarePen,Tags,PanelRightOpen , X,LogOut,Menu,AlignCenter} from "lucide-react"
+import {SendHorizontal,UserCircle,CircleQuestionMark,StickyNote,PlusCircle,SquarePen,Tags,PanelRightOpen,Banknote,X,LogOut,Menu,AlignCenter} from "lucide-react"
 import { useAuth } from "./AuthContext"
 import {Form_container} from "./Chatbot_creation.jsx"
 import {useNavigate} from "react-router"
@@ -217,8 +217,9 @@ export function SideBar({profile_active,setProfile_active,active,setActive}){
             <ul>
                 <li onClick={() => setShowForm(true)}><SquarePen  size={22} strokeWidth={1.50} color="#353232"/>{active && <span> New Chatbot</span>}</li>
                 <li onClick={() => navigate("/privacy-policy")}><StickyNote  size={22} strokeWidth={1.50} color="#353232"/>{active && <span>Privacy Policy</span>}</li>
-              <li onClick={() => setProfile_active(true)}><UserCircle  size={22} strokeWidth={1.50} color="#353232" onClick={() => setProfile_active(true)}/>{active && <span>User Profile</span>}</li>      
-                                                
+                <li onClick={() => setProfile_active(true)}><UserCircle  size={22} strokeWidth={1.50} color="#353232" onClick={() => setProfile_active(true)}/>{active && <span>User Profile</span>}</li>      
+                <li onClick={() => navigate('/refund')}><Banknote size={22} strokeWidth={1.50} color="#353232"/>{active && <span>Refund Policy</span>}</li>      
+
             </ul>
 
             {active && (
@@ -237,8 +238,7 @@ export function SideBar({profile_active,setProfile_active,active,setActive}){
                 <span>Messsage Counts</span> <h4>{user_details.total_messages || 0} / {user_details.total_messages_limit || 100}</h4>
                 </div>
                 
-                 <button onClick={handleUpgrade} className={styles.Upgrade_btn}>Unlock More</button>
-                 <button onClick={() => navigate("/pricing")}>Check Details</button>
+                 <button onClick={() => navigate("/pricing")} className={styles.Upgrade_btn}>Unlock More</button>
                 </div>
             )}
 
