@@ -76,7 +76,7 @@ export function ChatPage() {
         .from("profiles")
         .select("total_messages")
         .eq("id", chatbot.owner_id)
-        .single();
+        .maybeSingle();
 
       if (profile_error) {
         console.log(profile_error);
@@ -127,10 +127,20 @@ export function ChatPage() {
       .from("profiles")
       .select("total_messages_limit,total_messages")
       .eq("id", chatbot.owner_id)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.log(error);
+      return;
+    }
+    
+    if (!data) {
+      await supabase.from("profiles").upsert({
+        id: chatbot.owner_id,
+        total_messages: 0,
+        total_messages_limit: 100
+      });
+      Send_Message();
       return;
     }
 

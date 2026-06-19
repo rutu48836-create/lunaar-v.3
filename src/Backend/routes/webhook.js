@@ -1,6 +1,6 @@
 import express from "express"
 import crypto from "crypto"
-import { supabase } from "../config/supabase.js"
+import { supabase, supabaseAdmin } from "../config/supabase.js" 
 
 const router = express.Router();
 
@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
       return res.json({ status: "ok" });
     }
 
-    const { data: plan } = await supabase
+    const { data: plan } = await supabaseAdmin
       .from("plans")
       .select("*")
       .eq("razorpay_plan_id", sub.plan_id)
@@ -73,7 +73,7 @@ router.post("/", async (req, res) => {
 
       const planLimits = limits[plan?.id] || limits["Growth"];
 
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from("profiles")
         .update({
           plan: plan?.id,

@@ -58,11 +58,11 @@ const {user,loading} = useAuth();
                 <small>Add custom branding to make it look professinal</small><br/>
             
             <label>Agent-Logo</label><br/>
-    <input type="file" style={{fontSize:"8px"}} accept="image/*"  onChange={(e) => setLogo(e.target.files[0])} required
+    <input type="file" style={{display:"none"}} accept="image/*"  onChange={(e) => setLogo(e.target.files[0])} required
  id="logo"/>
 
- <label htmlFor="logo" className={styles.custom_button} placeholder="Upload Pdfs,text,spreadsheet  🗎">
- <small>📂 Upload Logo</small>
+ <label htmlFor="logo" className={styles.custom_button}>
+ <small>{logo ? `📂 ${logo.name}` : "📂 Upload Logo"}</small>
 </label><br/>
 
 <label style={{marginTop:"30px"}}>Choose Color</label><br/>
@@ -84,6 +84,7 @@ function Step_3({onNext,setStep,name,color,type,logo,setName,setType,setColor,se
 const {user,loading} = useAuth();
 const [trainingFile,setTrainingFile] = useState(null)
 const [creating,setLoading] = useState(false)
+
 
 const Upload_logo = async () => {
 if(!logo) return null;
@@ -158,7 +159,7 @@ const Create_bot = async () => {
   if(data.plan != "free"){
     setStep(4)
   }
-  else{
+  else if(data.plan === "free"){
      window.location.reload()
   }
 };
@@ -179,10 +180,10 @@ const Create_bot = async () => {
  required/><br/>
 
                 <label style={{marginTop:"30px"}}>Upload Knowledge</label><br/>
-<input type="file" onChange={(e) => setTrainingFile(e.target.files[0])} accept="application/pdf, text/plain, text/csv, text/markdown" id="file-upload"/>
+<input type="file" style={{display:"none"}} onChange={(e) => setTrainingFile(e.target.files[0])} accept="application/pdf, text/plain, text/csv, text/markdown" id="file-upload"/>
 
-<label htmlFor="file-upload" className={styles.custom_button} placeholder="Upload Pdfs,text,spreadsheet  🗎">
- <small>📄 Upload Pdfs,text,spreadsheet</small>
+<label htmlFor="file-upload" className={styles.custom_button}>
+ <small>{trainingFile ? `📄 ${trainingFile.name}` : "📄 Upload Pdfs,text,spreadsheet"}</small>
 </label>
 
   <div className={styles.btn_wrapper}>

@@ -256,7 +256,19 @@ border:none;
     font-weight: 520;
 }
 
-.right_side_head button{
+.dot_btn{
+width:38px;
+height:38px;
+border:1px solid #ccc;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-right:6px;
+cursor:pointer;
+}
+
+.right_side_head button:last-child{
 
 width:38px;
 height:38px;
@@ -364,6 +376,59 @@ cursor:pointer;
     display: flex;
     margin-left: -30px;
     font-size: 12.8px;
+}
+
+.delete_form_container{
+      position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.delete_form_panel{
+    width:400px;
+    height:250px;
+    border-radius: 20px;
+    padding-left: .8rem;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    color:#000;
+}
+
+.delete_form_head{
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0rem;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 0;
+    height: auto;
+}
+
+.delete_form_panel span{
+    width: 100%;
+    margin-top: 20px;
+}
+
+.delete_form_btns{
+    width: 100%;
+    height: auto;
+    display: flex;
+    margin-top: 40px;
+    gap:10px;
+}
+
+.delete_form_btns button{
+    min-width: 95%;
+    padding: .6rem;
+    font-family: "Inter",sans-serif;
+    background: #f66f6f;
+    color: #fff;
 }
 
 .leads_overlay {

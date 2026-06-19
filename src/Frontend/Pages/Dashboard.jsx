@@ -5,10 +5,10 @@ import { useAuth } from "../Components/AuthContext"
 import { SideBar } from "../Components/Nav"
 import { Plus, Pointer } from "lucide-react"
 import { Form_container } from "../Components/Chatbot_creation"
-import { supabase } from "../Components/supabase"
+import { supabase} from "../Components/supabase"
 import { Share } from "lucide-react"
 import { Navigate, useNavigate} from "react-router"
-import {Ellipsis,Trash2,Zap,SquarePen,CalendarDays,MoveRight,Link} from "lucide-react"
+import {Ellipsis,Trash2,Zap,SquarePen,CalendarDays,MoveRight,Link,CodeXml,X} from "lucide-react"
 import {Step_4} from "../Components/Chatbot_creation.jsx"
 import calendar from "../assets/calendar.jpg"
 import instagram from "../assets/instagram.avif"
@@ -29,6 +29,7 @@ function Main_Content(){
   const [step,setStep] = useState(1)
   const [chatbotId, setChatbotId] = useState(null)
   const [chatbot_id_for_ig,setChatbot_id_for_ig] = useState(null)
+  const [delete_form,setDelete_form] = useState(null)
   
   const [profile,setProfile] = useState(null)
 
@@ -44,19 +45,37 @@ const {data,error} = await supabase
 .from("profiles")
 .select("*")
 .eq("id",user.id)
+.maybeSingle()
 
 if(error){
   console.error(error)
   return;
 }
 
+if (!profile) {
+  await supabase.from('profiles').upsert({
+    id: user.id,
+    email: user.email,
+    full_name: user.user_metadata?.full_name ?? user.user_metadata?.name,
+    avatar_url: user.user_metadata?.avatar_url,
+  });
+
+
+
 setProfile(data[0])
 
 }
 
+}
+
+
 Profile_Check()
 
+
+
 },[user,loading])
+
+
 
 
   useEffect(() => {
@@ -86,10 +105,15 @@ Profile_Check()
   }
 
   const delete_chatbot = async(id) => {
-    if(!id) return;
-    const { error } = await supabase.from("chatbots").delete().eq("id", id);
-    if(error) { console.error(error); return; }
-    setChatbots(chatbots.filter((bot) => bot.id !== id));
+if (!id) return;
+  const { error } = await supabase.from("chatbots").delete().eq("id", id);
+  if (error) {
+    console.error(error);
+    alert("Failed to delete chatbot: " + error.message);
+    return;
+  }
+  setChatbots(chatbots.filter((bot) => bot.id !== id));
+  setDelete_form(null);
   }
 
   const getInitials = (name) => {
@@ -157,10 +181,33 @@ Profile_Check()
                   <img src={chatbot?.logo_url}/> <span>{chatbot.name}</span>
                   </div>
                   <div className={styles.right_side_head} style={{ position: 'relative' }}>
-                    <button onClick={() => delete_chatbot(chatbot.id)}><Trash2 size={20} color="#f54d4d"/></button>
-  <button onClick={() => setTask_list_active(task_list_active?.id === chatbot.id ? null : chatbot)}>
+                    <button onClick={() => setDelete_form(chatbot.id)}><Trash2 size={20} color="#f54d4d"/></button>
+  <button onClick={() => setTask_list_active(task_list_active?.id === chatbot.id ? null : chatbot)} className={styles.dot_btn}>
     <Ellipsis size={16}/>
-  </button>                       {task_list_active?.id === chatbot.id && (
+  </button>        
+    <button onClick={() => {
+                  navigator.clipboard.writeText(`<script src="https://lunaar.online/widget.js" data-chatbot-token=${chatbot.share_token} async></script>`)
+                  alert('code copied,paste it in your index.html file in the body')
+                }}>
+    <CodeXml size={16}/>
+  </button>  
+
+  {delete_form != null && (
+    <div className={styles.delete_form_container}>
+<div className={styles.delete_form_panel}>
+<div className={styles.delete_form_head}>
+ <h2>Delete</h2> <button onClick={() => setDelete_form(null)}><X/></button>
+  </div>
+
+  <span>if you delete you cannot restore it..</span>
+  <div className={styles.delete_form_btns}>
+    <button className={styles.delete_btn} onClick={() => delete_chatbot(chatbot.id)}>Delete</button>
+    </div>
+  </div>
+      </div>
+  )} 
+  
+                 {task_list_active?.id === chatbot.id && (
     <div className={styles.task_list_card}>
       
     <div className={styles.task_list_btns}>
@@ -182,6 +229,7 @@ Profile_Check()
                   navigator.clipboard.writeText(`${frontend_url}/chat/${chatbot.share_token}`)
                   alert('link copied')
                 }}><Link size={18}/></button></li>
+            
 
       </ul>
     </div>
