@@ -13,7 +13,7 @@ import {Step_4} from "../Components/Chatbot_creation.jsx"
 import calendar from "../assets/calendar.jpg"
 import instagram from "../assets/instagram.avif"
 
-function Main_Content(){
+function Main_Content({profile,setProfile}){
 
   const backend_url = import.meta.env.VITE_BACKEND_URL;
   const frontend_url = import.meta.env.VITE_FRONTEND_URL;
@@ -31,8 +31,6 @@ function Main_Content(){
   const [chatbot_id_for_ig,setChatbot_id_for_ig] = useState(null)
   const [delete_form,setDelete_form] = useState(null)
   
-  const [profile,setProfile] = useState(null)
-
 
 useEffect(() => {
 
@@ -142,10 +140,28 @@ if (!id) return;
 
       <div className={styles.Main_content_head}>
         <h2>Projects</h2>
-        <button onClick={() => setShowForm(true)}><SquarePen size={20}/><span>New Chatbot</span></button>
+        <button onClick={() => {
+
+          if(profile.chatbot_count >= profile.chatbot_limit){
+            alert("Limit reached consider upgrading")
+            return
+          }
+
+          setShowForm(true)
+        
+        }}><SquarePen size={20}/><span>New Chatbot</span></button>
       </div>
 
-      <div className={styles.new_project}>        <button onClick={() => setShowForm(true)}><SquarePen size={20}/><span>New Chatbot</span></button>
+      <div className={styles.new_project}> <button onClick={() => {
+
+          if(profile.chatbot_count >= profile.chatbot_limit){
+            alert("Limit reached consider upgrading")
+            return
+          }
+
+          setShowForm(true)
+        
+        }}><SquarePen size={20}/><span>New Chatbot</span></button>
 </div>
 
       <div className={styles.Chatbots_wrapper}>
@@ -224,7 +240,6 @@ if (!id) return;
       <ul>
         <li><span>type</span> <h4>{chatbot.type}</h4></li>
                 <li><span>Message</span> <h4>{chatbot.message_count || 0}</h4></li>
-                <li><span>Message Tokens</span> <h4>{chatbot.message_limit}</h4></li>
                 <li><span>Copy link</span> <button className={styles.copy_link_btn} onClick={() => {
                   navigator.clipboard.writeText(`${frontend_url}/chat/${chatbot.share_token}`)
                   alert('link copied')
@@ -307,13 +322,13 @@ export function Dashboard(){
 
   const [profile_active,setProfile_active] = useState(false)
     const [active,setActive] = useState(false)
-
+  const [profile,setProfile] = useState(null)
 
   return(
     <div className={styles.Dashboard_page_container}>
       <Nav_bar active={active} setActive={setActive}/>
       <div className={styles.Dashboard_Main_Content_wrapper}>
-        <SideBar profile_active={profile_active} setProfile_active={setProfile_active} active={active} setActive={setActive}/><Main_Content/>
+        <SideBar profile_active={profile_active} setProfile_active={setProfile_active} active={active} setActive={setActive} profile={profile} setProfile={setProfile}/><Main_Content profile={profile} setProfile={setProfile}/>
       </div>
     </div>
   )

@@ -144,7 +144,7 @@
 
 .Steps_card input[type="color"] {
     width: 90%;
-    height: 38px;
+    min-height: 40px;
     padding: 2px 4px;
     border-radius: 8px;
     border: none;

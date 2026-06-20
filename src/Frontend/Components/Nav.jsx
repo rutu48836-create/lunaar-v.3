@@ -215,7 +215,19 @@ export function SideBar({profile_active,setProfile_active,active,setActive}){
               )}
             </div>
             <ul>
-                <li onClick={() => setShowForm(true)}><SquarePen  size={22} strokeWidth={1.50} color="#353232"/>{active && <span> New Chatbot</span>}</li>
+                <li onClick={() => {
+
+                 if(user_details.chatbot_count >= user_details.chatbot_limit){
+                  alert("LIMIT REACHED CONSIDER UPGRADING")
+                  return
+                 }
+
+                 else{
+                  setShowForm(true)
+
+                 }
+                  
+                  }}><SquarePen  size={22} strokeWidth={1.50} color="#353232"/>{active && <span> New Chatbot</span>}</li>
                 <li onClick={() => navigate("/privacy-policy")}><StickyNote  size={22} strokeWidth={1.50} color="#353232"/>{active && <span>Privacy Policy</span>}</li>
                 <li onClick={() => setProfile_active(true)}><UserCircle  size={22} strokeWidth={1.50} color="#353232" onClick={() => setProfile_active(true)}/>{active && <span>User Profile</span>}</li>      
                 <li onClick={() => navigate('/refund')}><Banknote size={22} strokeWidth={1.50} color="#353232"/>{active && <span>Refund Policy</span>}</li>      
