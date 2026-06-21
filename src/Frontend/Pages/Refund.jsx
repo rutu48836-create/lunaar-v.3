@@ -203,8 +203,8 @@ export default function Refund() {
 
         <div style={styles.footer}>
           Questions about a charge or your subscription? Contact{" "}
-          <a href="mailto:support@example.com" style={styles.link}>
-            support@example.com
+          <a href="mailto:lunaaroffical@gmail.com" style={styles.link}>
+            lunaar.online
           </a>
           .
         </div>
