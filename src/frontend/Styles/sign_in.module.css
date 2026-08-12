@@ -82,12 +82,18 @@ body{
 }
 
 .Main_form input,
-.Main_form button,
 .Sign_in_provider {
     width: 100%;
     box-sizing: border-box;
     font-family: "Inter",sans-serif;
 }
+
+.Main_form button{
+  width:90%;
+  font-family:"Inter",sans-serif;
+  font-weight:500;
+}
+
 
 .Main_form input{
     height: 44px;

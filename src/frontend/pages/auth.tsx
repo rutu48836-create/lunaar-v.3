@@ -35,7 +35,7 @@ const handleGitLogin = async () => {
   supabase.auth.signInWithOAuth({
   provider: 'github',
   options: {
-    redirectTo: `http://localhost:3000/dashboard`
+    redirectTo: `https://lunaar.online/dashboard`
   }
 })
 }
