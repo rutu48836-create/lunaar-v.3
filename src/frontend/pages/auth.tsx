@@ -26,7 +26,7 @@ const handleGoogleLogin = async () => {
   supabase.auth.signInWithOAuth({
   provider: 'google',
   options: {
-    redirectTo: `http://localhost:3000/dashboard`
+    redirectTo: `https://lunaar.online/dashboard`
   }
 })
 }
