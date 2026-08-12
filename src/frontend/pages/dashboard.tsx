@@ -185,7 +185,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
 
   const [chatbot_id, setChatbot_id] = useState<string>("");
 
-  const { user } = useAuth();
+  const { user,loading } = useAuth();
   const [select_ai, setSelect_ai] = useState<boolean>(false);
   const [ai_provider, setAi_provider] = useState<string>(() => localStorage.getItem("ai_provider") || "Gemini");
   const [ai_model, setAi_model] = useState<string>(() => localStorage.getItem("ai_model") || "gemini-2.5-flash-lite");
@@ -224,7 +224,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
   };
 
   useEffect(() => {
-    if(!user) navigate('/login');
+    if(!user && !loading) navigate('/login');
   },[user])
 
     useEffect(() => {
