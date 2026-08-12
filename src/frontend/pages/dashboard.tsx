@@ -6,6 +6,8 @@ import { Share, Send, Lock, X, Phone, Paperclip, ArrowUp, Image as ImageIcon, Te
 import { Sidebar, Navbar } from "../components/Nav.jsx";
 import styles from "../Styles/Dashboard.module.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -223,7 +225,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
 
     const fetchStatus = async () => {
       try {
-        const checkStatus = await fetch(`http://localhost:8000/ai/job/${jobId}`, {
+        const checkStatus = await fetch(`${BACKEND_URL}/ai/job/${jobId}`, {
           method: "GET"
         });
 
@@ -321,7 +323,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
     });
 
     try {
-      const res = await fetch("http://localhost:8000/ai/chat", {
+      const res = await fetch(`${BACKEND_URL}/ai/chat`, {
         method: "POST",
         body: formData
       });

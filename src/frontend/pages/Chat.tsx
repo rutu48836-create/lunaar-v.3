@@ -1,4 +1,3 @@
-
 import {useState,useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import {useRef} from 'react'
@@ -7,6 +6,8 @@ import {useAuth} from '../components/AuthContext'
 import { Share, Send, Lock, X, Phone, Paperclip, ArrowUp,TextAlignStart } from "lucide-react";
 import {supabase} from '../components/supabaseConfig.js'
 import { Sidebar } from '../components/Nav'
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
@@ -80,7 +81,7 @@ interface ChatMessage {
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      const res = await fetch("http://localhost:8000/ai/chat", {
+      const res = await fetch(`${BACKEND_URL}/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_message: originalMessage, history: historyRef.current, type: type,user_id:user?.id,chatbot_id:chatbot_id })
