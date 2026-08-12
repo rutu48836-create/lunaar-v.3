@@ -595,7 +595,7 @@ USER REQUEST:
 ${user_message}
 `;
 }
-const worker = new Worker('render-jobs', async (job) => {
+export const worker = new Worker('render-jobs', async (job) => {
 
     const { user_message, user_id, chatbot_id, ai_provider, ai_model, api_key, history, assets } = job.data;
     console.log('user_message', user_message);
