@@ -474,6 +474,7 @@ body{
         width: 90%;
         margin-top: 30px;
         box-shadow: none;
+        border:none;
         height:auto;
     }
 
