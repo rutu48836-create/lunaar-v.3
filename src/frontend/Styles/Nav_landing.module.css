@@ -1,0 +1,269 @@
+/*
+  Lunaar navbar — flat black bar, plain white type, one pill CTA.
+  Load: DM Sans (via next/font or Google Fonts link).
+*/
+
+.navRoot {
+  --bg: transparent;
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.75);
+  --border: rgba(255, 255, 255, 0.1);
+  --accent: #e8890c;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: transparent;
+}
+
+.nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: black;
+  padding: 10px 10px;
+  margin-top: 10px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ---------- Logo ---------- */
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+/* ---------- Desktop links ---------- */
+
+.linkList {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  padding-left: 24px;
+}
+
+.linkItem {
+  display: flex;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.linkActive {
+  color: var(--text);
+}
+
+/* ---------- Actions (desktop) ---------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.secondaryButton {
+  padding: 4px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.secondaryButton:hover {
+  color: var(--text-muted);
+}
+
+.secondaryButton:focus-visible,
+.ctaButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.ctaButton {
+  padding: 11px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #000000;
+  background: #ffffff;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.ctaButton:hover {
+  filter: brightness(0.92);
+}
+
+/* ---------- Mobile toggle ---------- */
+
+.menuToggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.menuToggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.menuIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------- Mobile menu panel ---------- */
+
+.mobileMenu {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  transition: max-height 0.3s ease;
+}
+
+.mobileMenuOpen {
+  max-height: 420px;
+}
+
+.mobileLinkList {
+  list-style: none;
+  margin: 0;
+  padding: 8px 24px 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobileLink {
+  display: block;
+  padding: 14px 4px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.mobileLink:last-child {
+  border-bottom: none;
+}
+
+.mobileLinkActive {
+  color: var(--text);
+}
+
+.mobileActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 24px 28px;
+}
+
+.mobileActions .secondaryButton {
+  width: 100%;
+  padding: 12px 16px;
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.mobileActions .ctaButton {
+  width: 100%;
+  padding: 13px 16px;
+  text-align: center;
+}
+
+a{
+  text-decoration: none;
+}
+
+@media (max-width: 860px) {
+  .linkList,
+  .actions {
+    display: none;
+  }
+
+  .menuToggle {
+    display: inline-flex;
+  }
+
+  .mobileMenu {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    background: transparent;
+    border-bottom: 0;
+    border: none;
+    max-width: 90vw;
+  }
+
+  .mobileMenu{
+    background: black;
+    border-top: none;
+  }
+
+  .logo {
+    font-size: 19px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .navRoot,
+  .link,
+  .ctaButton,
+  .secondaryButton,
+  .mobileMenu {
+    transition: none;
+  }
+}
