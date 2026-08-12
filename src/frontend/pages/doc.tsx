@@ -1,5 +1,5 @@
 
-import styles from "../styles/docs.module.css";
+import styles from "../Styles/Docs.module.css";
 import { Navbar } from "../components/landing_nav";
 
 const steps = [

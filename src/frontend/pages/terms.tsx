@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import styles from "../styles/terms.module.css";
+import styles from "../Styles/terms.module.css";
 import { Navbar } from "../components/landing_nav"
 
 const Terms = () => {
