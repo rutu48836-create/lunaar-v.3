@@ -5,8 +5,11 @@ import { useAuth } from "../components/AuthContext";
 import { Share, Send, Lock, X, Phone, Paperclip, ArrowUp, Image as ImageIcon, TextAlignStart } from "lucide-react";
 import { Sidebar, Navbar } from "../components/Nav.jsx";
 import styles from "../Styles/Dashboard.module.css";
+import { useNavigate } from "react-router-dom";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+const navigate = useNavigate()
 
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
@@ -168,6 +171,7 @@ interface MainProps {
 }
 
 function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
+
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [user_message, setUser_message] = useState<string>("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -217,6 +221,10 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
       return [];
     });
   };
+
+  useEffect(() => {
+    if(!user) navigate('/login');
+  },[user])
 
     useEffect(() => {
     if (!jobId) return;
