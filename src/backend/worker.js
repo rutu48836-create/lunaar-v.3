@@ -737,7 +737,7 @@ const generationPrompt = buildGenerationPrompt({ intent, user_message, assets, s
 
 }, {
     connection,
-    concurrency: 3
+    concurrency: 6
 });
 
 worker.on('completed', (job, result) => {
