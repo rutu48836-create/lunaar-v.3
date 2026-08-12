@@ -9,8 +9,6 @@ import { useNavigate } from "react-router-dom";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-const navigate = useNavigate()
-
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
@@ -192,6 +190,9 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
   const [ai_provider, setAi_provider] = useState<string>(() => localStorage.getItem("ai_provider") || "Gemini");
   const [ai_model, setAi_model] = useState<string>(() => localStorage.getItem("ai_model") || "gemini-2.5-flash-lite");
   const [apikey, setAPI_key] = useState<string>(() => localStorage.getItem("ai_api_key") || "");
+
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     localStorage.setItem("ai_provider", ai_provider);
