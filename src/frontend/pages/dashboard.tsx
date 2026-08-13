@@ -57,20 +57,20 @@ function Chat({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isWaiting]);
 
-    const texts: string[] = ["Thinking....", "Thinking..", "thinking..","thinking.","this may take some time..."];
+  const texts: string[] = ["Thinking....", "Thinking..", "thinking..", "thinking.", "this may take some time..."];
   const [currentText, setCurrentText] = useState<string>(texts[0]);
 
   useEffect(() => {
-    for(let i = 0; i < texts.length;i++){
-       setTimeout(() => {
+    for (let i = 0; i < texts.length; i++) {
+      setTimeout(() => {
         setCurrentText(texts[i]);
       }, i * 4000);
     }
-  },[])
+  }, [])
 
   return (
     <div className={styles.Chat_wrapper}>
-                <div className={styles.Nav_container}><button onClick={() => setSidebar_active(true)}><TextAlignStart size={18} /></button></div>
+      <div className={styles.Nav_container}><button onClick={() => setSidebar_active(true)}><TextAlignStart size={18} /></button></div>
       <div className={styles.chats}>
         <div className={styles.messages}>
           {messages.map((msg, index) => (
@@ -112,7 +112,7 @@ function Chat({
                     width={100}
                     onClick={() => setSelectedAsset(asset)}
                   />
-                  <button onClick={() => removeAsset(asset.id)} className={styles.image_preview_btn}><X size={16}/></button>
+                  <button onClick={() => removeAsset(asset.id)} className={styles.image_preview_btn}><X size={16} /></button>
                 </div>
               ))}
             </div>
@@ -178,14 +178,14 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null);
-  const [res_data,setRes_data] = useState<null | []>(null)
+  const [res_data, setRes_data] = useState<null | []>(null)
   const [jobId, setJobId] = useState<string | null>(null);
 
   const chatbotIdRef = useRef<string | null>(null);
 
   const [chatbot_id, setChatbot_id] = useState<string>("");
 
-  const { user,loading } = useAuth();
+  const { user, loading } = useAuth();
   const [select_ai, setSelect_ai] = useState<boolean>(false);
   const [ai_provider, setAi_provider] = useState<string>(() => localStorage.getItem("ai_provider") || "Gemini");
   const [ai_model, setAi_model] = useState<string>(() => localStorage.getItem("ai_model") || "gemini-2.5-flash-lite");
@@ -224,10 +224,10 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
   };
 
   useEffect(() => {
-    if(!user && !loading) navigate('/login');
-  },[user])
+    if (!loading && !user) navigate('/login');
+  }, [user, loading])
 
-    useEffect(() => {
+  useEffect(() => {
     if (!jobId) return;
 
     let cancelled = false;
@@ -243,26 +243,26 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
 
         if (cancelled) return;
 
-        if(data.state === 'active'){
+        if (data.state === 'active') {
           setIsWaiting(true)
         }
 
-        else if(data.state === 'waiting'){
+        else if (data.state === 'waiting') {
           setIsWaiting(true)
         }
 
-    else if (data.state === "completed") {
-  const botMessage: ChatMessage = {
-    role: "assistant",
-    content: data.result?.message || "",
-    isVideo: data.result?.videoUrl
-  };
-  historyRef.current = [...historyRef.current, botMessage];
-  setMessages(prev => [...prev, botMessage]);
-  setIsWaiting(false);
-  clearAssets();
-  return;
-}
+        else if (data.state === "completed") {
+          const botMessage: ChatMessage = {
+            role: "assistant",
+            content: data.result?.message || "",
+            isVideo: data.result?.videoUrl
+          };
+          historyRef.current = [...historyRef.current, botMessage];
+          setMessages(prev => [...prev, botMessage]);
+          setIsWaiting(false);
+          clearAssets();
+          return;
+        }
 
         else {
           const errorMessage: ChatMessage = {
@@ -294,8 +294,20 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
   const Send_Message = async () => {
 
     if (!user_message.trim() || isWaiting) return;
+
+    if (!user?.id) {
+      console.error("No authenticated user yet, refusing to send");
+      const authErrorMessage: ChatMessage = {
+        role: "assistant",
+        content: "You're not signed in yet. Please wait a moment and try again."
+      };
+      historyRef.current = [...historyRef.current, authErrorMessage];
+      setMessages(prev => [...prev, authErrorMessage]);
+      return;
+    }
+
     setIsWaiting(true);
-    
+
     let activeChatbotId = chatbotIdRef.current;
     if (!activeChatbotId) {
       activeChatbotId = crypto.randomUUID();
@@ -319,7 +331,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
     formData.append("user_message", originalMessage);
     formData.append("history", JSON.stringify(historyRef.current));
     formData.append("type", type);
-    formData.append("user_id", user?.id ?? "");
+    formData.append("user_id", user.id);
     formData.append("chatbot_id", activeChatbotId);
     formData.append("ai_provider", ai_provider);
     formData.append("ai_model", ai_model);
@@ -337,29 +349,31 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
         body: formData
       });
 
-            let aiResponse;
-
+      const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-       aiResponse = "you have a request in process.... try after it is completed"
+        const errorMessage: ChatMessage = {
+          role: "assistant",
+          content: data?.message || data?.error || "Something went wrong sending that. Please try again."
+        };
+        historyRef.current = [...historyRef.current, errorMessage];
+        setMessages(prev => [...prev, errorMessage]);
+        return;
       }
 
-      const data = await res.json();
-
-      setJobId(data.jobId)
-
-
-      if(data.message === "You already have a request in progress"){
-       aiResponse = "you have a request in process.... try after it is completed"
+      if (data?.jobId) {
+        setJobId(data.jobId);
+        return;
       }
-     else{
-       aiResponse = data.message;
-     }
+
+      const aiResponse = data?.message === "You already have a request in progress"
+        ? "you have a request in process.... try after it is completed"
+        : (data?.message || "");
 
       const botMessage: ChatMessage = {
         role: "assistant",
-        content: aiResponse || "",
-        isVideo: data.videoUrl
+        content: aiResponse,
+        isVideo: data?.videoUrl
       };
 
       historyRef.current = [...historyRef.current, botMessage];
@@ -375,7 +389,9 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
       historyRef.current = [...historyRef.current, errorMessage];
       setMessages(prev => [...prev, errorMessage]);
     } finally {
-      setIsWaiting(false);
+      if (!jobId) {
+        setIsWaiting(false);
+      }
     }
   };
 
@@ -421,7 +437,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
                     width={100}
                     onClick={() => setSelectedAsset(asset)}
                   />
-                  <button onClick={() => removeAsset(asset.id)} className={styles.image_preview_btn}><X size={16}/></button>
+                  <button onClick={() => removeAsset(asset.id)} className={styles.image_preview_btn}><X size={16} /></button>
                 </div>
               ))}
             </div>
@@ -466,25 +482,25 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
           </div>
 
           <div className={styles.prompts_wrapper}>
-  <div className={styles.prompt} onClick={() => setUser_message("Create a Duolingo styled animation with a friendly mascot character bouncing in, celebratory confetti burst, and a streak counter incrementing with a satisfying pop sound cue")}>
-    <span>Create a duolingo styled animations</span>
-  </div>
-  <div className={styles.prompt} onClick={() => setUser_message("Create a 15 second promo clip for a fitness app showing a person's workout progress, animated stats counting up (calories burned, steps, streak days), and a bold call-to-action to download the app")}>
-    <span>Create a promo clip for fitness app</span>
-  </div>
-  <div className={styles.prompt} onClick={() => setUser_message("Create a data visualization clip showing India's population growth over the decades with an animated bar chart, key milestone callouts, and a map highlighting major cities by population density")}>
-    <span>Create a clip for showing indian population stats</span>
-  </div>
-  <div className={styles.prompt} onClick={() => setUser_message("Create a biography clip on Elon Musk covering his early life, founding of PayPal, Tesla, SpaceX, and Neuralink, with animated timeline transitions and key milestone highlights")}>
-    <span>Create a clip showing biography of elon musk</span>
-  </div>
-  <div className={styles.prompt} onClick={() => setUser_message("Create a motion graphic showing Apple's rise to success, highlighting key product launches (Mac, iPod, iPhone, iPad), animated revenue growth chart, and market cap milestones")}>
-    <span>Create a showing apple's success</span>
-  </div>
-  <div className={styles.prompt} onClick={() => setUser_message("Create a visual graphic comparing Marvel vs DC fanbases with animated bar charts of fan counts, box office revenue comparison, and iconic character silhouettes from each universe")}>
-    <span>Create a visual graphic showing fans of marvel vs dc</span>
-  </div>
-</div>
+            <div className={styles.prompt} onClick={() => setUser_message("Create a Duolingo styled animation with a friendly mascot character bouncing in, celebratory confetti burst, and a streak counter incrementing with a satisfying pop sound cue")}>
+              <span>Create a duolingo styled animations</span>
+            </div>
+            <div className={styles.prompt} onClick={() => setUser_message("Create a 15 second promo clip for a fitness app showing a person's workout progress, animated stats counting up (calories burned, steps, streak days), and a bold call-to-action to download the app")}>
+              <span>Create a promo clip for fitness app</span>
+            </div>
+            <div className={styles.prompt} onClick={() => setUser_message("Create a data visualization clip showing India's population growth over the decades with an animated bar chart, key milestone callouts, and a map highlighting major cities by population density")}>
+              <span>Create a clip for showing indian population stats</span>
+            </div>
+            <div className={styles.prompt} onClick={() => setUser_message("Create a biography clip on Elon Musk covering his early life, founding of PayPal, Tesla, SpaceX, and Neuralink, with animated timeline transitions and key milestone highlights")}>
+              <span>Create a clip showing biography of elon musk</span>
+            </div>
+            <div className={styles.prompt} onClick={() => setUser_message("Create a motion graphic showing Apple's rise to success, highlighting key product launches (Mac, iPod, iPhone, iPad), animated revenue growth chart, and market cap milestones")}>
+              <span>Create a showing apple's success</span>
+            </div>
+            <div className={styles.prompt} onClick={() => setUser_message("Create a visual graphic comparing Marvel vs DC fanbases with animated bar charts of fan counts, box office revenue comparison, and iconic character silhouettes from each universe")}>
+              <span>Create a visual graphic showing fans of marvel vs dc</span>
+            </div>
+          </div>
         </>
       ) : (
         <Chat
@@ -508,9 +524,9 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
           <div className={styles.Img_upload_card}>
             <div className={styles.card_nav}>
               <h3>Select Role</h3>
-              <button onClick={() => setSelect_ai(false)}><X size={16}/></button>
+              <button onClick={() => setSelect_ai(false)}><X size={16} /></button>
             </div>
-            <label>Role</label><br/>
+            <label>Role</label><br />
 
             <select
               value={selectedAsset.role}
@@ -529,7 +545,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
               <option value="background">Background</option>
               <option value="person">Person</option>
             </select>
-<br/>
+            <br />
             <button onClick={() => setSelectedAsset(null)} className={styles.close_btn}>
               Close
             </button>
@@ -542,7 +558,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
           <div className={styles.select_ai_model_card}>
             <div className={styles.card_nav}>
               <h3>Select Model</h3>
-              <button onClick={() => setSelect_ai(false)}><X size={16}/></button>
+              <button onClick={() => setSelect_ai(false)}><X size={16} /></button>
             </div>
 
             <div className={styles.card_main_content}>
@@ -569,7 +585,7 @@ function Main_content({ sidebar_active, setSidebar_active }: MainProps) {
                 </select>
               )}<br />
 
-               {ai_provider === "Claude" && (
+              {ai_provider === "Claude" && (
                 <select value={ai_model} onChange={(e) => setAi_model(e.target.value)}>
                   <option value="claude-sonnet-5">claude-sonnet-5</option>
                   <option value="claude-haiku-4-5-20251001">claude-haiku-4-5-20251001</option>
