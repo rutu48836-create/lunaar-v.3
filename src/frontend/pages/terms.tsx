@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import styles from "../Styles/terms.module.css";
 import { Navbar } from "../components/landing_nav"
@@ -11,10 +10,10 @@ const Terms = () => {
         <p className={styles.eyebrow}>Legal</p>
         <h1 className={styles.title}>Terms &amp; Conditions</h1>
         <p className={styles.subtitle}>
-          Motion Graphics Generation — please read carefully before using
-          Lunaar's AI motion graphics tools.
+          AI Chatbot Builder — please read carefully before using
+          Lunaar's chatbot tools.
         </p>
-        <p className={styles.updated}>Last updated: August 12, 2026</p>
+        <p className={styles.updated}>Last updated: October 18, 2026</p>
       </header>
 
       <main className={styles.content}>
@@ -24,37 +23,34 @@ const Terms = () => {
             Acceptance of Terms
           </h2>
           <p className={styles.text}>
-            By accessing or using Lunaar's motion graphics generation
-            service, you agree to be bound by these Terms &amp; Conditions.
-            If you do not agree with any part of these terms, you must not
-            use this service.
+            By accessing or using Lunaar's chatbot builder, you agree to be
+            bound by these Terms &amp; Conditions. If you do not agree with
+            any part of these terms, you must not use this service.
           </p>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
             <span className={styles.sectionNumber}>02</span>
-            Ownership of Assets &amp; Images
+            Ownership of Content &amp; Knowledge Data
           </h2>
           <p className={styles.text}>
-            Images, footage, graphics, and other assets used, referenced, or
-            incorporated during the generation of clips and videos through
-            Lunaar are{" "}
+            Documents, text, images, and other content you provide to train,
+            instruct, or inform your bot remain{" "}
             <strong className={styles.highlight}>
-              not the property of Lunaar or any individual associated with
-              Lunaar
+              the property of you or the respective original creator or
+              rights holder, and not of Lunaar or any individual associated
+              with Lunaar
             </strong>
-            . All rights, credit, and courtesy for such assets belong solely
-            to the respective original creator, artist, or rights holder.
-            Lunaar makes no ownership claim over third-party assets that may
-            appear in generated outputs and does not warrant that use of
-            such assets is free of third-party rights.
+            . Lunaar makes no ownership claim over this content and does not
+            warrant that use of any third-party material is free of
+            third-party rights.
           </p>
           <p className={styles.text}>
             Users are responsible for ensuring they have the appropriate
-            rights, licenses, or permissions for any assets they upload or
-            request to be used in generation, and for giving proper
-            attribution where required by the original rights holder.
+            rights, licenses, or permissions for any content they add to a
+            bot, and for giving proper attribution where required by the
+            original rights holder.
           </p>
         </section>
 
@@ -75,14 +71,15 @@ const Terms = () => {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
             <span className={styles.sectionNumber}>04</span>
-            Generated Content License
+            Bot Usage License
           </h2>
           <p className={styles.text}>
             Subject to your compliance with these terms, Lunaar grants you a
-            license to use the clips and videos you generate for personal or
-            commercial purposes. This license does not extend to any
-            underlying third-party assets, which remain subject to their
-            original owners' rights as described above.
+            free license to build, deploy, and use the bots you create, and
+            the responses they produce, for personal or commercial
+            purposes. This license does not extend to any underlying
+            third-party content, which remains subject to its original
+            owners' rights as described above.
           </p>
         </section>
 
@@ -92,11 +89,12 @@ const Terms = () => {
             Prohibited Use
           </h2>
           <p className={styles.text}>
-            You may not use the service to generate content that is
-            unlawful, infringing, defamatory, obscene, or that violates the
-            intellectual property or privacy rights of any third party.
-            Lunaar reserves the right to suspend or terminate accounts found
-            to be in violation of this policy.
+            You may not use the service to build bots that produce or
+            promote content that is unlawful, infringing, defamatory,
+            obscene, deceptive, or that violates the intellectual property
+            or privacy rights of any third party. Lunaar reserves the right
+            to suspend or block access to bots found to be in violation of
+            this policy.
           </p>
         </section>
 
@@ -107,21 +105,25 @@ const Terms = () => {
           </h2>
           <p className={styles.text}>
             The service is provided "as is" without warranties of any kind.
-            Lunaar shall not be liable for any indirect, incidental, or
-            consequential damages arising from your use of the service or
-            from any third-party assets appearing in generated content.
+            Bot responses are generated by third-party AI models and may be
+            inaccurate or incomplete. Lunaar shall not be liable for any
+            indirect, incidental, or consequential damages arising from your
+            use of the service, from bot responses, or from any third-party
+            content or provider charges.
           </p>
         </section>
 
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>
             <span className={styles.sectionNumber}>07</span>
-            Account Responsibility
+            API Key Responsibility
           </h2>
           <p className={styles.text}>
-            You are responsible for maintaining the confidentiality of your
-            account credentials and for all activity that occurs under your
-            account. Notify us immediately of any unauthorized use.
+            Lunaar is free to use and works on a bring-your-own-key basis.
+            You are responsible for keeping your API keys confidential, for
+            all usage and charges incurred with your AI provider, and for
+            all activity that occurs through your keys. Revoke and replace
+            any key you believe has been compromised.
           </p>
         </section>
 
@@ -144,7 +146,7 @@ const Terms = () => {
           </h2>
           <p className={styles.text}>
             For questions about these Terms &amp; Conditions, reach out
-            through the contact options available in your Lunaar dashboard.
+            through the contact options available on the Lunaar website.
           </p>
         </section>
       </main>
